@@ -19,6 +19,7 @@ interface CartContextType {
   remove: (id: string) => void;
   quantity: (id: string) => number;
   decreaseOne: (id: string) => void;
+  clearCart: () => void;
   total: number;
 }
 
@@ -52,6 +53,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const clearCart = () =>
+    setCart(() => {
+      localStorage.removeItem("cart");
+      window.dispatchEvent(
+        new StorageEvent("storage", { key: "cart", newValue: null }),
+      );
+      return [];
+    });
+
   const remove = (id: string) =>
     setCart((prev) => prev.filter((i) => i.id !== id));
   const quantity = (id: string) => cart.find((i) => i.id === id)?.quantity ?? 0;
@@ -59,7 +69,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   return (
     <CartContext.Provider
-      value={{ cart, hydrated, add, remove, quantity, decreaseOne, total }}
+      value={{
+        cart,
+        hydrated,
+        add,
+        remove,
+        quantity,
+        decreaseOne,
+        clearCart,
+        total,
+      }}
     >
       {children}
     </CartContext.Provider>

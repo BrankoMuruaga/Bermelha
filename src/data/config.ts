@@ -4,7 +4,7 @@ export const ITEMS_PER_PAGE = 4;
 
 export const navbar = [
   { name: "Catálogo", href: "/#catalogo" },
-  { name: "Categorias", href: "/categorias" },
+  { name: "Categorías", href: "/categorias" },
   { name: "Pedidos Personalizados", href: "/personalizado" },
   { name: "Preguntas frecuentes", href: "/preguntas-frecuentes" },
 ];
@@ -15,15 +15,15 @@ export const footer = {
   secciones: {
     comprar: [
       {
-        title: "Catalogo",
+        title: "Catálogo",
         href: "/#catalogo",
       },
       {
-        title: "Orden personalizada",
+        title: "Pedidos personalizados",
         href: "/#personalizado",
       },
       {
-        title: "Categorias",
+        title: "Categorías",
         href: "/categorias",
       },
     ],

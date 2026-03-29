@@ -18,7 +18,7 @@ interface CarritoProps {
 }
 
 const Carrito = ({ productos, telefono }: CarritoProps) => {
-  const { cart, hydrated } = useCart();
+  const { cart, hydrated, clearCart } = useCart();
 
   if (!hydrated) return <LoadingScreen />;
 
@@ -52,6 +52,8 @@ const Carrito = ({ productos, telefono }: CarritoProps) => {
       message,
     )}`;
     window.open(url, "_blank");
+
+    clearCart();
   };
 
   return (

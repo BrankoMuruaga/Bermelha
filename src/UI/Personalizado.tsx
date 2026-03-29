@@ -48,7 +48,7 @@ export default function Personalizado({ telefono }: { telefono: number }) {
           <input
             id="nombre"
             type="text"
-            placeholder="Ej: Zorro con bufanda azul"
+            placeholder="Tu nombre"
             value={form.nombre}
             onChange={(e) => setForm((f) => ({ ...f, nombre: e.target.value }))}
             className="bg-surface-container-low rounded-full px-5 py-3 text-body-md text-on-surface placeholder:text-on-surface-variant placeholder:opacity-55 ghost-border focus:ring-2 focus:ring-primary/30 outline-none transition-smooth"
