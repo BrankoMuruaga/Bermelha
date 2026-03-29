@@ -21,7 +21,7 @@ export function ProductCard({
   precio,
 }: ProductCardProps) {
   const { toggle, isWishlisted } = useWishlist();
-  const { add, quantity } = useCart();
+  const { add, decreaseOne, quantity } = useCart();
   const wished = isWishlisted(id);
 
   return (
@@ -68,6 +68,9 @@ export function ProductCard({
             <CartButton
               quantity={quantity(id)}
               onAddToCart={() => add(id)}
+              decreaseOne={() => {
+                decreaseOne(id);
+              }}
               name={nombre}
             />
           </div>
