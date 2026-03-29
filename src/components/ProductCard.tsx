@@ -1,8 +1,8 @@
-import { IconButton } from "./IconButton";
+import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { Heart } from "lucide-react";
 import CartButton from "./CartButton";
-import { useWishlist } from "@/context/WishlistContext";
-import { useCart } from "@/context/CartContext";
+import { IconButton } from "./IconButton";
 
 interface ProductCardProps {
   id: string;

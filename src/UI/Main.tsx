@@ -1,8 +1,8 @@
 import { SearchInput } from "@/components/SearchInput";
 import { NuqsAdapter } from "nuqs/adapters/react";
+import CardPersonalizado from "../components/CardPersonalizado";
 import Bento from "./Bento";
 import Catalogo from "./Catalogo";
-import CardPersonalizado from "../components/CardPersonalizado";
 
 interface MainProps {
   productos: {

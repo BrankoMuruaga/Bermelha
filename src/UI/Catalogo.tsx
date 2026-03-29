@@ -1,11 +1,11 @@
+import { ProductCardSkeleton } from "@/components/Skeletons";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
+import { useHydrated } from "@/hooks/useHydrated";
 import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { useEffect, useRef } from "react";
 import Pagination from "../components/Pagination";
 import { ProductCard } from "../components/ProductCard";
-import { useHydrated } from "@/hooks/useHydrated";
-import { ProductCardSkeleton } from "@/components/Skeletons";
 
 interface CatalogoProps {
   itemsPerPage?: number;

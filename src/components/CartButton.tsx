@@ -1,6 +1,6 @@
+import { useCart } from "@/context/CartContext";
 import { ShoppingCart } from "lucide-react";
 import { IconButton } from "./IconButton";
-import { useCart } from "@/context/CartContext";
 
 interface CartButtonProps {
   onAddToCart: () => void;

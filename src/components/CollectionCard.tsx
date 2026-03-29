@@ -1,4 +1,4 @@
-import { parseAsString, useQueryState } from "nuqs";
+import { useQueryState } from "nuqs";
 
 interface CollectionCardProps {
   image: string;

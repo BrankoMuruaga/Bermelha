@@ -1,5 +1,5 @@
-import { Minus, Plus, Trash2 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { Trash2 } from "lucide-react";
 import { IconButton } from "./IconButton";
 import { QuantityControls } from "./QuantityControl";
 

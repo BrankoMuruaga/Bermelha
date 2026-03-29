@@ -1,6 +1,5 @@
-import { Share2, Mail, ArrowRight } from "lucide-react";
-import { useState } from "react";
 import { footer } from "@/data/config";
+import { useState } from "react";
 
 export default function Footer() {
   const [email, setEmail] = useState("");

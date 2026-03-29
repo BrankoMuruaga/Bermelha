@@ -1,4 +1,3 @@
-// context/WishlistContext.tsx
 import {
   createContext,
   useContext,

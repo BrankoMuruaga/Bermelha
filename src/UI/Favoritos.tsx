@@ -1,9 +1,9 @@
+import LoadingScreen from "@/components/Loading";
 import { SearchInput } from "@/components/SearchInput";
 import { useWishlist, WishlistProvider } from "@/context/WishlistContext";
 import { ITEMS_PER_PAGE } from "@/data/config";
 import { NuqsAdapter } from "nuqs/adapters/react";
 import Catalogo from "./Catalogo";
-import LoadingScreen from "@/components/Loading";
 
 interface FavoritosProps {
   productos: {
