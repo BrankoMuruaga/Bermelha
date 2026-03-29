@@ -1,46 +1,50 @@
-# Astro Starter Kit: Basics
+# Bermelha 🧶
 
-```sh
-pnpm create astro@latest -- --template basics
+Tienda online de amigurumis hechos a mano.
+
+## Stack
+
+- **Astro** — framework principal
+- **React** — componentes interactivos (islas)
+- **Tailwind CSS v4** — estilos
+- **Contentful** — CMS para productos y colecciones
+- **nuqs** — manejo de query params en la URL
+
+## Estructura
+
+```
+src/
+├── components/       # Componentes reutilizables (Button, IconButton, ProductCard...)
+├── context/          # CartContext, WishlistContext
+├── data/             # Configuración y mocks
+├── hooks/            # useLocalStorage, useHydrated, useContentful
+├── layouts/          # Layout base de Astro
+├── pages/            # Páginas (index, carrito, favoritos)
+├── styles/           # global.css
+└── UI/               # Componentes de página (Main, Catalogo, Bento...)
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Variables de entorno
 
-## 🚀 Project Structure
+Crear un archivo `.env.local`:
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+```env
+PUBLIC_CONTENTFUL_SPACE_ID=tu_space_id
+PUBLIC_CONTENTFUL_ACCESS_TOKEN=tu_access_token
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## Instalación
 
-## 🧞 Commands
+```bash
+pnpm install
+pnpm run dev
+```
 
-All commands are run from the root of the project, from a terminal:
+## Funcionalidades
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- Catálogo con búsqueda y paginación por URL
+- Filtro por colección desde el bento
+- Carrito y favoritos persistidos en localStorage
+- Pedidos personalizados
+- Preguntas frecuentes
+- Responsive

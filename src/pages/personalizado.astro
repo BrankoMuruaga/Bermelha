@@ -1,0 +1,12 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { getEntries } from "@/lib/contentful";
+import MainPersonalizado from "@/UI/Personalizado.tsx";
+
+const itemsConfiguracion = await getEntries("configuracionGlobal");
+const telefono = itemsConfiguracion[0]?.fields?.telefono;
+---
+
+<Layout>
+  <MainPersonalizado telefono={telefono} client:load />
+</Layout>

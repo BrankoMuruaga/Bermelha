@@ -1,0 +1,18 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { getEntries } from "@/lib/contentful";
+import MainCategorias from "@/UI/Categorias.tsx";
+
+const itemsColecciones = await getEntries("coleccion");
+const colecciones = itemsColecciones.map((item: any) => ({
+  id: item.sys.id,
+  nombre: item.fields.nombre,
+  subtitulo: item.fields.subtitulo,
+  imagen: "https:" + item.fields.imagen.fields.file.url,
+  destacado: item.fields.destacado ?? false,
+}));
+---
+
+<Layout>
+  <MainCategorias colecciones={colecciones} client:load />
+</Layout>

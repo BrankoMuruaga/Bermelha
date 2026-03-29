@@ -1,0 +1,249 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+  /* ===== COLORES - Primary ===== */
+  --color-primary: #8d4e39;
+  --color-primary-dim: #7a4531;
+  --color-primary-container: #f9a78d;
+  --color-primary-on: #ffffff;
+
+  /* ===== COLORES - Secondary ===== */
+  --color-secondary: #685e4e;
+  --color-secondary-dim: #efe0cd;
+  --color-secondary-container: #f0ddd3;
+  --color-secondary-on: #ffffff;
+
+  /* ===== COLORES - Tertiary ===== */
+  --color-tertiary: #4c6456;
+  --color-tertiary-container: #cdeadb;
+  --color-tertiary-on: #ffffff;
+
+  /* ===== COLORES - Surface ===== */
+  --color-surface: #fcf9f8;
+  --color-surface-dim: #ede9e7;
+  --color-surface-bright: #fffbfe;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f5f3f3;
+  --color-surface-container-high: #ede9e7;
+
+  /* ===== COLORES - On-Surface ===== */
+  --color-on-surface: #323233;
+  --color-on-surface-variant: #524744;
+  --color-inverse-surface: #322f2d;
+
+  /* ===== COLORES - Outline ===== */
+  --color-outline: #8a7b75;
+  --color-outline-variant: #a8928b;
+
+  /* ===== FUENTES ===== */
+  --font-serif: "Noto Serif", serif;
+  --font-sans: "Be Vietnam Pro", sans-serif;
+
+  /* ===== ESPACIADO - Base ===== */
+  --spacing-0: 0;
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-10: 2.5rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+  --spacing-20: 5rem;
+
+  /* ===== ESPACIADO - Editorial ===== */
+  --spacing-editorial-8: 2.75rem;
+  --spacing-editorial-12: 4rem;
+  --spacing-editorial-20: 7rem;
+
+  /* ===== BORDER RADIUS ===== */
+  --radius-none: 0;
+  --radius-sm: 0.5rem;
+  --radius-md: 1.5rem;
+  --radius-lg: 2rem;
+  --radius-xl: 3rem;
+  --radius-2xl: 4rem;
+  --radius-full: 9999px;
+
+  /* ===== BOX SHADOW (Ambient) ===== */
+  --shadow-ambient-sm: 0 1px 3px rgba(50, 50, 51, 0.12);
+  --shadow-ambient-md: 0 3px 8px rgba(50, 50, 51, 0.15);
+  --shadow-ambient-lg: 0 6px 16px rgba(50, 50, 51, 0.12);
+  --shadow-ambient-xl: 0 12px 32px rgba(50, 50, 51, 0.08);
+  --shadow-ambient-2xl: 0 32px 64px rgba(50, 50, 51, 0.04);
+
+  /* ===== BACKDROP BLUR ===== */
+  --blur-xs: 4px;
+  --blur-sm: 8px;
+  --blur-md: 12px;
+  --blur-lg: 24px;
+}
+
+/* ===== UTILIDADES DE TIPOGRAFÍA ===== */
+@utility text-display-lg {
+  font-size: 3.5rem;
+  line-height: 1.1;
+  letter-spacing: 0;
+  font-weight: 400;
+  font-family: var(--font-serif);
+}
+
+@utility text-display-md {
+  font-size: 2.8rem;
+  line-height: 1.2;
+  letter-spacing: 0;
+  font-weight: 400;
+  font-family: var(--font-serif);
+}
+
+@utility text-headline-lg {
+  font-size: 2rem;
+  line-height: 1.3;
+  letter-spacing: 0;
+  font-weight: 600;
+  font-family: var(--font-serif);
+}
+
+@utility text-headline-md {
+  font-size: 1.75rem;
+  line-height: 1.3;
+  letter-spacing: 0;
+  font-weight: 600;
+  font-family: var(--font-serif);
+}
+
+@utility text-title-lg {
+  font-size: 1.375rem;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  font-weight: 600;
+  font-family: var(--font-sans);
+}
+
+@utility text-title-md {
+  font-size: 1rem;
+  line-height: 1.5;
+  letter-spacing: 0.015em;
+  font-weight: 600;
+  font-family: var(--font-sans);
+}
+
+@utility text-body-sm {
+  font-size: 0.65rem;
+  line-height: 1.3;
+  letter-spacing: 0.5px;
+  font-weight: 300;
+  font-family: var(--font-sans);
+}
+
+@utility text-body-lg {
+  font-size: 1rem;
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+  font-weight: 400;
+  font-family: var(--font-sans);
+}
+
+@utility text-body-md {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  letter-spacing: 0.25px;
+  font-weight: 400;
+  font-family: var(--font-sans);
+}
+
+@utility text-label-lg {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  font-family: var(--font-sans);
+}
+
+@utility text-label-md {
+  font-size: 0.75rem;
+  line-height: 1.3;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+}
+
+/* ===== Base Styles ===== */
+* {
+  box-sizing: border-box;
+}
+
+[id] {
+  scroll-margin-top: 40vh;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== Glassmorphism ===== */
+.glass {
+  background-color: rgba(252, 249, 248, 0.8);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  border: 1px solid rgba(168, 146, 139, 0.15);
+}
+
+.glass-overlay {
+  background-color: rgba(50, 47, 45, 0.4);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+}
+
+/* ===== No-Line Rule: Use color shifts instead ===== */
+.surface-base {
+  background-color: var(--color-surface);
+}
+
+.surface-low {
+  background-color: var(--color-surface-container-low);
+}
+
+.surface-high {
+  background-color: var(--color-surface-container-high);
+}
+
+.surface-card {
+  background-color: var(--color-surface-container-lowest);
+}
+
+.surface-card:hover {
+  background-color: var(--color-secondary-dim);
+}
+
+/* ===== Ghost Border Utility ===== */
+.ghost-border {
+  border: 1px solid rgba(138, 123, 117, 0.15);
+}
+
+/* ===== Smooth Transitions ===== */
+.transition-smooth {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transition-fast {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}

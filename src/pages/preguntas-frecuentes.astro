@@ -1,0 +1,18 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { getEntries } from "@/lib/contentful";
+import MainPreguntasFrecuentes from "@/UI/PreguntasFrecuentes.tsx";
+
+const itemsPreguntasFrecuentes = await getEntries("preguntasFrecuentes");
+const preguntasFrecuentes = itemsPreguntasFrecuentes.map((item: any) => ({
+  pregunta: item.fields.pregunta,
+  respuesta: item.fields.respuesta,
+}));
+---
+
+<Layout>
+  <MainPreguntasFrecuentes
+    preguntasFrecuentes={preguntasFrecuentes}
+    client:load
+  />
+</Layout>
