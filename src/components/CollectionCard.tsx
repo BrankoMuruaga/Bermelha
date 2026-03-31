@@ -1,5 +1,3 @@
-import { useQueryState } from "nuqs";
-
 interface CollectionCardProps {
   image: string;
   title: string;
@@ -13,14 +11,11 @@ export function CollectionCard({
   subtitle,
   className = "",
 }: CollectionCardProps) {
-  const [, setQuery] = useQueryState("q");
-
   return (
-    <button
-      type="button"
-      onClick={() => {
-        setQuery(title);
-        window.location.href = `/#catalogo`;
+    <a
+      onClick={(e) => {
+        e.preventDefault();
+        window.location.href = `/?q=${encodeURIComponent(title)}#catalogo`;
       }}
       className={`relative overflow-hidden rounded-md cursor-pointer group transition-smooth hover:scale-105 hover:shadow-ambient-lg ${className}`}
     >
@@ -34,6 +29,6 @@ export function CollectionCard({
         <h3 className="text-title-md text-white text-xl">{title}</h3>
         {subtitle && <p className=" text-white/75 mb-1 text-md">{subtitle}</p>}
       </div>
-    </button>
+    </a>
   );
 }
