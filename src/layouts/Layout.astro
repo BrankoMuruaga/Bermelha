@@ -1,5 +1,6 @@
 ---
 import Analytics from "@vercel/analytics/astro";
+import SpeedInsights from "@vercel/speed-insights/astro";
 import "@/styles/global.css";
 import Footer from "@/UI/Footer";
 import Navbar from "@/UI/Navbar";
@@ -13,6 +14,7 @@ import Navbar from "@/UI/Navbar";
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
     <title>Bermelha | Amigurumis</title>
     <Analytics />
+    <SpeedInsights />
   </head>
   <body>
     <Navbar client:load />
