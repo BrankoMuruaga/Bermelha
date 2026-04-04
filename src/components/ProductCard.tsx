@@ -58,7 +58,7 @@ export function ProductCard({
         <div className="flex flex-col mt-3 gap-1">
           <p className="text-title-md text-on-surface">{nombre}</p>
           <p className="text-body-md text-on-surface-variant">
-            Altura: {centimetros} cm
+            Altura: {centimetros} cm aprox.
           </p>
 
           <div className="w-full flex items-center justify-between mt-1">
