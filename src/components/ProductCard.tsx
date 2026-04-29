@@ -63,7 +63,7 @@ export function ProductCard({
 
           <div className="w-full flex items-center justify-between mt-1">
             <p className="text-title-md text-primary">
-              ${precio.toLocaleString("es-ES")}
+              ${precio.toLocaleString("es-ES")} c/u.
             </p>
             <CartButton
               quantity={quantity(id)}
