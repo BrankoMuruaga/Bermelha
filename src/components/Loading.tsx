@@ -33,8 +33,8 @@ export default function LoadingScreen() {
           d="M 100 155 Q 250 162 400 155"
           fill="none"
           stroke="#f9a78d"
-          stroke-width="4"
-          stroke-linecap="round"
+          strokeWidth="4"
+          strokeLinecap="round"
         />
 
         <g className="yarn-ball">
@@ -44,59 +44,59 @@ export default function LoadingScreen() {
             d="M -25 -25 Q 0 -40 25 -25"
             fill="none"
             stroke="#AA654F"
-            stroke-width="3"
-            stroke-linecap="round"
+            strokeWidth="3"
+            strokeLinecap="round"
           />
           <path
             d="M -35 -5 Q 0 -15 35 -5"
             fill="none"
             stroke="#AA654F"
-            stroke-width="4"
-            stroke-linecap="round"
+            strokeWidth="4"
+            strokeLinecap="round"
           />
           <path
             d="M -38 10 Q 0 0 38 10"
             fill="none"
             stroke="#AA654F"
-            stroke-width="3"
-            stroke-linecap="round"
+            strokeWidth="3"
+            strokeLinecap="round"
           />
           <path
             d="M -30 25 Q 0 15 30 25"
             fill="none"
             stroke="#AA654F"
-            stroke-width="4"
-            stroke-linecap="round"
+            strokeWidth="4"
+            strokeLinecap="round"
           />
 
           <path
             d="M -15 -35 Q -30 0 -15 35"
             fill="none"
             stroke="#8D4D38"
-            stroke-width="3"
-            stroke-linecap="round"
+            strokeWidth="3"
+            strokeLinecap="round"
           />
           <path
             d="M 0 -38 Q -15 0 0 38"
             fill="none"
             stroke="#8D4D38"
-            stroke-width="4"
-            stroke-linecap="round"
+            strokeWidth="4"
+            strokeLinecap="round"
           />
           <path
             d="M 15 -35 Q 0 0 15 35"
             fill="none"
             stroke="#8D4D38"
-            stroke-width="3"
-            stroke-linecap="round"
+            strokeWidth="3"
+            strokeLinecap="round"
           />
 
           <path
             d="M 0 38 Q 5 45 -5 45"
             fill="none"
             stroke="#8D4D38"
-            stroke-width="4"
-            stroke-linecap="round"
+            strokeWidth="4"
+            strokeLinecap="round"
           />
         </g>
       </svg>
