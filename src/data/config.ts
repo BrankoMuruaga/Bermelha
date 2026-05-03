@@ -3,7 +3,7 @@ export const WHATSAPP_URL = "https://wa.me/+540";
 export const ITEMS_PER_PAGE = 4;
 
 export const navbar = [
-  { name: "Catálogo", href: "/#catalogo" },
+  { name: "Catálogo", href: "/catalogo" },
   { name: "Categorías", href: "/categorias" },
   { name: "Pedidos Personalizados", href: "/personalizado" },
   { name: "Preguntas frecuentes", href: "/preguntas-frecuentes" },
