@@ -6,6 +6,8 @@ import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { useEffect, useRef } from "react";
 import Pagination from "../components/Pagination";
 import { ProductCard } from "../components/ProductCard";
+import { NuqsAdapter } from "nuqs/adapters/react";
+import { SearchInput } from "@/components/SearchInput";
 
 interface CatalogoProps {
   itemsPerPage?: number;
@@ -83,3 +85,15 @@ export default function Catalogo({
     </CartProvider>
   );
 }
+
+export const MainCatalogo = ({ itemsPerPage, productos }: CatalogoProps) => {
+  return (
+    <NuqsAdapter>
+      <h3 className="text-label-lg text-xl text-primary">Catálogo</h3>
+
+      <SearchInput placeholder="¿Qué amigurumi buscas hoy?" className="mb-6" />
+
+      <Catalogo itemsPerPage={itemsPerPage} productos={productos} />
+    </NuqsAdapter>
+  );
+};

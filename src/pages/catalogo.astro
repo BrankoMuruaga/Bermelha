@@ -1,0 +1,25 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { getEntries } from "@/lib/contentful";
+
+import { MainCatalogo } from "@/UI/Catalogo";
+
+const itemsProductos = await getEntries("producto");
+const productos = itemsProductos.map((item: any) => ({
+  id: item.sys.id,
+  nombre: item.fields.nombre,
+  precio: item.fields.precio,
+  imagenPrincipal: "https:" + item.fields.imagenPrincipal.fields.file.url,
+  centimetros: item.fields.centimetros,
+  tags: item.fields.tags ?? [],
+  coleccion: item.fields.coleccion?.fields.nombre ?? null,
+}));
+---
+
+<Layout>
+  <MainCatalogo
+    client:load
+    itemsPerPage={productos.length}
+    productos={productos}
+  />
+</Layout>
