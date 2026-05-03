@@ -68,8 +68,8 @@ export const POST: APIRoute = async ({ request }) => {
         body: {
           items: preferenceItems,
           back_urls: {
-            success: "https://bermelha.com/payment-success",
-            failure: "https://bermelha.com/payment-failed",
+            success: `${import.meta.env.PUBLIC_BASE_URL}/payment-success`,
+            failure: `${import.meta.env.PUBLIC_BASE_URL}/payment-failed`,
           },
           auto_return: "approved",
         },
