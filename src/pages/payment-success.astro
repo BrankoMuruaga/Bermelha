@@ -1,6 +1,13 @@
 ---
 import MainPaymentSuccess from "@/UI/PaymentSuccess.tsx";
 import Layout from "@/layouts/Layout.astro";
+
+const { searchParams } = new URL(Astro.request.url);
+const paymentId = searchParams.get("payment_id");
+
+if (!paymentId) {
+  return Astro.redirect("/");
+}
 ---
 
 <Layout>
