@@ -5,6 +5,7 @@ import { WalletSkeleton } from "@/components/Skeletons";
 import { CartProvider, useCart } from "@/context/CartContext";
 import { WHATSAPP_URL } from "@/data/config";
 import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
+import { set } from "astro:schema";
 import { useEffect, useState } from "react";
 
 initMercadoPago(import.meta.env.PUBLIC_MP_PUBLIC_KEY);
@@ -25,6 +26,7 @@ interface CarritoProps {
 const Carrito = ({ productos, telefono }: CarritoProps) => {
   const { cart, hydrated, clearCart } = useCart();
   const [preferenceId, setPreferenceId] = useState<string>("");
+  const [preferenceError, setPreferenceError] = useState(false);
 
   useEffect(() => {
     if (!hydrated || cart.length === 0) return;
@@ -52,6 +54,7 @@ const Carrito = ({ productos, telefono }: CarritoProps) => {
 
       if (!response.ok) {
         console.error("Error al crear preferencia:", response.statusText);
+        setPreferenceError(true);
         return;
       }
 
@@ -121,9 +124,9 @@ const Carrito = ({ productos, telefono }: CarritoProps) => {
             </div>
           </div>
           <div className="w-full sm:max-w-[60%] flex flex-col items-center gap-3">
-            {!preferenceId ? (
+            {!preferenceId && !preferenceError ? (
               <WalletSkeleton />
-            ) : (
+            ) : !preferenceError ? (
               <>
                 <div className="w-full">
                   <Wallet
@@ -145,7 +148,7 @@ const Carrito = ({ productos, telefono }: CarritoProps) => {
                   <div className="flex-1 h-px bg-surface-dim" />
                 </div>
               </>
-            )}
+            ) : null}
 
             <Button
               icon={<img src="./whatsapp.svg" alt="WhatsApp" className="w-5" />}
