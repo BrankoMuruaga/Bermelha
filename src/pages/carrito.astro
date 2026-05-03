@@ -13,8 +13,11 @@ const productos = itemsProductos.map((item: any) => ({
   tags: item.fields.tags ?? [],
   coleccion: item.fields.coleccion?.fields.nombre ?? null,
 }));
+
+const itemsConfiguracion = await getEntries("configuracionGlobal");
+const telefono = itemsConfiguracion[0].fields.telefono;
 ---
 
 <Layout>
-  <MainCarrito productos={productos} client:load />
+  <MainCarrito productos={productos} telefono={telefono} client:load />
 </Layout>
