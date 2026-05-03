@@ -44,3 +44,12 @@ export function CollectionCardSkeleton({
     </div>
   );
 }
+
+export function WalletSkeleton() {
+  return (
+    <div className="w-full flex flex-col gap-1">
+      <SkeletonPulse className="w-full h-12 rounded-sm" />
+      <SkeletonPulse className="w-full h-2.5 rounded-sm mx-auto" />
+    </div>
+  );
+}

@@ -1,12 +1,16 @@
+import { Button } from "@/components/Button";
 import CarritoList from "@/components/CarritoList";
 import LoadingScreen from "@/components/Loading";
+import { WalletSkeleton } from "@/components/Skeletons";
 import { CartProvider, useCart } from "@/context/CartContext";
+import { WHATSAPP_URL } from "@/data/config";
 import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 import { useEffect, useState } from "react";
 
-initMercadoPago("APP_USR-b9858e60-b8f0-4837-b24b-c7d0bc63b624");
+initMercadoPago(import.meta.env.PUBLIC_MP_PUBLIC_KEY);
 
 interface CarritoProps {
+  telefono: number;
   productos: {
     id: string;
     nombre: string;
@@ -18,7 +22,7 @@ interface CarritoProps {
   }[];
 }
 
-const Carrito = ({ productos }: CarritoProps) => {
+const Carrito = ({ productos, telefono }: CarritoProps) => {
   const { cart, hydrated, clearCart } = useCart();
   const [preferenceId, setPreferenceId] = useState<string>("");
 
@@ -79,6 +83,18 @@ const Carrito = ({ productos }: CarritoProps) => {
     0,
   );
 
+  const handleWhatsapp = () => {
+    const message = `Hola! Me gustaría hacer un pedido con los siguientes productos:\n\n${productosEnCarrito
+      .map(
+        (p) =>
+          `- ${p.nombre} (Cantidad: ${p.quantity}, Precio unitario: $${p.precio})`,
+      )
+      .join("\n")}\n\nTotal: $${totalCompra}`;
+    const url = `${WHATSAPP_URL}${telefono}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+    clearCart();
+  };
+
   return (
     <section className="flex flex-col items-center gap-6 w-full">
       <h1 className="text-label-lg text-xl text-primary">Carrito de compras</h1>
@@ -93,7 +109,6 @@ const Carrito = ({ productos }: CarritoProps) => {
             contigo para coordinar la entrega.
           </p>
           <CarritoList productos={productosEnCarrito} />
-
           <div className="bg-surface-container-lowest rounded-md px-6 py-5 shadow-ambient-sm flex flex-col gap-3 w-full">
             <p className="text-label-md text-on-surface-variant">RESUMEN</p>
             <div className="flex justify-between items-center border-t border-surface-dim pt-3">
@@ -105,13 +120,40 @@ const Carrito = ({ productos }: CarritoProps) => {
               </p>
             </div>
           </div>
+          <div className="w-full sm:max-w-[60%] flex flex-col items-center gap-3">
+            {!preferenceId ? (
+              <WalletSkeleton />
+            ) : (
+              <>
+                <div className="w-full">
+                  <Wallet
+                    initialization={{ preferenceId }}
+                    customization={{
+                      customStyle: {
+                        buttonHeight: "48px",
+                        borderRadius: "10px",
+                        verticalPadding: "10px",
+                        horizontalPadding: "10px",
+                      },
+                    }}
+                  />
+                </div>
 
-          <div className="w-full sm:max-w-[60%] flex flex-col items-center gap-4">
-            {preferenceId && (
-              <div className="w-80 h-20">
-                <Wallet initialization={{ preferenceId }} />
-              </div>
+                <div className="flex items-center gap-3 w-full">
+                  <div className="flex-1 h-px bg-surface-dim" />
+                  <p className="text-label-sm text-on-surface-variant">o</p>
+                  <div className="flex-1 h-px bg-surface-dim" />
+                </div>
+              </>
             )}
+
+            <Button
+              icon={<img src="./whatsapp.svg" alt="WhatsApp" className="w-5" />}
+              variant="primary"
+              label="Generar pedido por WhatsApp"
+              onClick={handleWhatsapp}
+              className="w-full justify-center"
+            />
           </div>
         </>
       )}
@@ -119,10 +161,10 @@ const Carrito = ({ productos }: CarritoProps) => {
   );
 };
 
-export default function MainCarrito({ productos }: CarritoProps) {
+export default function MainCarrito({ productos, telefono }: CarritoProps) {
   return (
     <CartProvider>
-      <Carrito productos={productos} />
+      <Carrito productos={productos} telefono={telefono} />
     </CartProvider>
   );
 }
