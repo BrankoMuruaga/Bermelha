@@ -17,6 +17,7 @@ const resend = new Resend(import.meta.env.RESEND_API_KEY);
 
 /**
  * Valida la firma criptográfica del webhook de Mercado Pago
+ * utilizando comparación en tiempo constante sobre bytes puros
  */
 function isWebhookSignatureValid(
   request: Request,
@@ -25,9 +26,15 @@ function isWebhookSignatureValid(
 ): boolean {
   const xSignature = request.headers.get("x-signature");
   const xRequestId = request.headers.get("x-request-id");
-  const dataId = url.searchParams.get("data.id");
 
-  if (!xSignature || !dataId) return false;
+  const dataId = url.searchParams.get("data.id") || url.searchParams.get("id");
+
+  if (!xSignature || !dataId) {
+    console.warn(
+      `[Seguridad] Faltan datos. URL: ${url.search} | x-signature presente: ${!!xSignature}`,
+    );
+    return false;
+  }
 
   const parts = xSignature.split(",");
   let ts = "";
@@ -53,10 +60,19 @@ function isWebhookSignatureValid(
     const bufferRecibido = Buffer.from(v1, "hex");
 
     if (signatureCalculada.length !== bufferRecibido.length) {
+      console.warn(
+        `[Seguridad] Longitud de firma incorrecta para ID: ${dataId}`,
+      );
       return false;
     }
 
-    return crypto.timingSafeEqual(signatureCalculada, bufferRecibido);
+    const isValid = crypto.timingSafeEqual(signatureCalculada, bufferRecibido);
+
+    if (!isValid) {
+      console.warn(`[Seguridad] Firma no coincide para ID: ${dataId}`);
+    }
+
+    return isValid;
   } catch (error) {
     console.error("Error al comparar las firmas criptográficas:", error);
     return false;
