@@ -72,6 +72,7 @@ export const POST: APIRoute = async ({ request }) => {
             failure: `${import.meta.env.PUBLIC_BASE_URL}/payment-failed`,
           },
           auto_return: "approved",
+          notification_url: `${import.meta.env.PUBLIC_BASE_URL}/api/mercadopago/pagos`,
         },
       })
       .then((data) => {
