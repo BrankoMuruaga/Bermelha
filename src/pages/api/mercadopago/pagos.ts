@@ -201,8 +201,7 @@ export const POST: APIRoute = async ({ request, url }) => {
     if (paymentData.status === "approved") {
       console.log(`¡Pago ${paymentId} aprobado de forma segura!`);
 
-      //const emailCliente = paymentData.payer?.email;
-      const emailCliente = "contacto@bermelha.com";
+      const emailCliente = paymentData.payer?.email;
 
       if (emailCliente) {
         const { data, error } = await resend.emails.send({
