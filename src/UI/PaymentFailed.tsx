@@ -1,4 +1,5 @@
 import { Button } from "@/components/Button";
+import { mailContact } from "@/data/config";
 
 const PaymentFailed = () => {
   return (
@@ -45,6 +46,15 @@ const PaymentFailed = () => {
           className="w-full justify-center"
         />
       </div>
+      <p className="text-body-sm text-on-surface-variant mt-8">
+        ¿Tenés alguna duda? Escribinos a{" "}
+        <a
+          href={`mailto:${mailContact}`}
+          className="text-primary font-semibold hover:underline transition-smooth"
+        >
+          {mailContact}
+        </a>
+      </p>
     </div>
   );
 };

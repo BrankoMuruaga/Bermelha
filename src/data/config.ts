@@ -1,5 +1,7 @@
 export const WHATSAPP_URL = "https://wa.me/+540";
 
+export const mailContact = "contacto@bermelha.com";
+
 export const ITEMS_PER_PAGE = 4;
 
 export const navbar = [
