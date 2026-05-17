@@ -2,6 +2,7 @@ import { Button } from "@/components/Button";
 import CarritoList from "@/components/CarritoList";
 import LoadingScreen from "@/components/Loading";
 import { WalletSkeleton } from "@/components/Skeletons";
+import { WarningAlert } from "@/components/WarningAlert";
 import { CartProvider, useCart } from "@/context/CartContext";
 import { WHATSAPP_URL } from "@/data/config";
 import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
@@ -108,9 +109,14 @@ const Carrito = ({ productos, telefono }: CarritoProps) => {
       ) : (
         <>
           <p className="text-center">
-            Una vez que hayas generado el pedido nos pondremos en contacto
-            contigo para coordinar la entrega.
+            Una vez que confirmes tu compra, nos pondremos en contacto para
+            coordinar la entrega.
           </p>
+          <WarningAlert>
+            Considerá que{" "}
+            <strong>tu pedido requerirá unos días de elaboración</strong> antes
+            de ser despachado.
+          </WarningAlert>
           <CarritoList productos={productosEnCarrito} />
           <div className="bg-surface-container-lowest rounded-md px-6 py-5 shadow-ambient-sm flex flex-col gap-3 w-full">
             <p className="text-label-md text-on-surface-variant">RESUMEN</p>
