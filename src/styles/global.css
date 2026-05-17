@@ -247,3 +247,28 @@ body {
 .transition-fast {
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 12px;
+  background: var(--color-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) var(--color-surface);
+}
