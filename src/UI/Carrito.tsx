@@ -6,7 +6,6 @@ import { WarningAlert } from "@/components/WarningAlert";
 import { CartProvider, useCart } from "@/context/CartContext";
 import { WHATSAPP_URL } from "@/data/config";
 import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
-import { set } from "astro:schema";
 import { useEffect, useState } from "react";
 
 initMercadoPago(import.meta.env.PUBLIC_MP_PUBLIC_KEY);
