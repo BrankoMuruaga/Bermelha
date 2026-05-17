@@ -3,6 +3,7 @@ import { NuqsAdapter } from "nuqs/adapters/react";
 import CardPersonalizado from "../components/CardPersonalizado";
 import Bento from "./Bento";
 import Catalogo from "./Catalogo";
+import { ArrowRight } from "lucide-react";
 
 interface MainProps {
   productos: {
@@ -25,7 +26,7 @@ interface MainProps {
 }
 
 const Main = ({ productos, colecciones }: MainProps) => {
-  const ITEMS_PER_PAGE = 4; // Verificar como ajustarlo para que sea responsive, por ejemplo 2 en pantallas pequeñas y 4 en grandes
+  const ITEMS_PER_PAGE = 4;
 
   return (
     <NuqsAdapter>
@@ -34,11 +35,25 @@ const Main = ({ productos, colecciones }: MainProps) => {
         <Bento colecciones={colecciones} />
       </section>
 
-      {/*Barra de busqueda*/}
-      <SearchInput placeholder="¿Qué amigurumi buscas hoy?" className="mb-6" />
+      {/*Buscador*/}
+      <div className="w-full max-w-2xl mx-auto flex flex-col gap-2 mb-6 px-4 sm:px-0">
+        <SearchInput placeholder="¿Qué amigurumi buscas hoy?" />
+
+        <div className="w-full flex justify-end">
+          <a
+            href="/catalogo"
+            className="group inline-flex items-center gap-1.5 text-sm sm:text-base font-medium text-primary hover:text-primary/80 transition-colors"
+          >
+            Explora el catálogo completo
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+          </a>
+        </div>
+      </div>
 
       {/*Catálogo*/}
-      <Catalogo itemsPerPage={ITEMS_PER_PAGE} productos={productos} />
+      <div className="w-full flex flex-col items-center gap-2">
+        <Catalogo itemsPerPage={ITEMS_PER_PAGE} productos={productos} />
+      </div>
 
       <CardPersonalizado />
     </NuqsAdapter>

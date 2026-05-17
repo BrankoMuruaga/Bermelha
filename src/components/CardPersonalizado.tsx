@@ -23,7 +23,7 @@ export default function CustomOrdersBanner() {
             variant="secondary"
             label="Ver galería de trabajos"
             onClick={() => {
-              document.getElementById("catalogo")?.scrollIntoView();
+              window.location.href = "/catalogo";
             }}
           />
         </div>
