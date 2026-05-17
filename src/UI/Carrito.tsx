@@ -1,6 +1,7 @@
 import { Button } from "@/components/Button";
 import CarritoList from "@/components/CarritoList";
 import LoadingScreen from "@/components/Loading";
+import { WarningAlert } from "@/components/WarningAlert";
 import { CartProvider, useCart } from "@/context/CartContext";
 import { WHATSAPP_URL } from "@/data/config";
 
@@ -66,9 +67,14 @@ const Carrito = ({ productos, telefono }: CarritoProps) => {
       ) : (
         <>
           <p className="text-center">
-            Una vez que hayas generado el pedido nos pondremos en contacto
-            contigo para coordinar la entrega.
+            Una vez que confirmes tu compra, nos pondremos en contacto para
+            coordinar la entrega.
           </p>
+          <WarningAlert>
+            Considerá que{" "}
+            <strong>tu pedido requerirá unos días de elaboración</strong> antes
+            de ser despachado.
+          </WarningAlert>
           <CarritoList productos={productosEnCarrito} />
 
           {/* Resumen de compra */}
