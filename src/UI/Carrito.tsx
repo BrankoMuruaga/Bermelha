@@ -130,7 +130,7 @@ const Carrito = ({ productos, telefono }: CarritoProps) => {
               <CarritoList productos={productosEnCarrito} />
             </div>
 
-            <div className=" w-full lg:w-1/3 bg-surface-container-lowest rounded-t-md lg:rounded-md px-6 py-5 shadow-[0_-8px_20px_rgba(0,0,0,0.06)] lg:shadow-ambient-sm flex flex-col gap-3 sticky bottom-0 lg:bottom-auto lg:top-18 z-40 border-t lg:border-none border-surface-dim">
+            <div className=" w-full lg:w-1/3 bg-surface-container-lowest rounded-t-md lg:rounded-md px-6 py-5 shadow-[0_-8px_20px_rgba(0,0,0,0.06)] lg:shadow-ambient-sm flex flex-col gap-3 sticky bottom-0 lg:bottom-auto lg:top-18  border-t lg:border-none border-surface-dim">
               <div className="hidden sm:flex border-b border-surface-dim  flex-col gap-4">
                 <p className="text-label-md text-on-surface-variant">
                   DATOS DE ENVÍO

@@ -17,10 +17,10 @@ const ShippingModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 h-screen z-100 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm ">
+    <div className="fixed inset-0 h-screen flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm z-20">
       <div className="bg-surface-container-lowest w-full max-w-lg rounded-md shadow-ambient-2xl max-h-[90vh] overflow-y-auto flex flex-col relative [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {/* Header del Modal */}
-        <div className="sticky top-0 bg-surface-container-lowest pt-6 pb-4 px-6 border-b border-surface-dim flex justify-between items-center z-10 rounded-t-md">
+        <div className="sticky top-0 bg-surface-container-lowest pt-6 pb-4 px-6 border-b border-surface-dim flex justify-between items-center z-30 rounded-t-md">
           <h2 className="text-title-lg text-primary m-0">{title}</h2>
           <button
             onClick={onClose}

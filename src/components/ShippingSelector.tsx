@@ -59,11 +59,27 @@ export const ShippingSelector = ({
       setError(null);
 
       try {
-        await new Promise((resolve) => setTimeout(resolve, 800));
-        const simulatedCost = selected.deliveryType === "D" ? 5500 : 3500;
-        onShippingCalculated(simulatedCost, selected);
+        // Petición real a tu propio servidor de Astro
+        const response = await fetch("/api/envio/correoargentino/costo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            cp: selected.postalCode,
+            type: selected.deliveryType,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `Error al cotizar el envío: ${response.statusText}. Detalles: ${await response.text()}`,
+          );
+        }
+
+        const data = await response.json();
+        onShippingCalculated(data.cost, selected);
       } catch (err) {
-        setError("Error al cotizar el envío. Verificá tu código postal.");
+        console.error(err);
+        setError("" + err);
         onShippingCalculated(0, null);
       } finally {
         setIsLoading(false);
@@ -81,25 +97,21 @@ export const ShippingSelector = ({
       }
       return Date.now().toString(36) + Math.random().toString(36).substring(2);
     };
-    try {
-      const newAddress: Address = {
-        id: generateId(),
-        alias: newAlias,
-        postalCode: newCP,
-        street: newStreet,
-        number: newNumber,
-        deliveryType: "D",
-      };
-      setAddresses([...addresses, newAddress]);
-      setSelectedId(newAddress.id);
-      setIsAddingHome(false);
-      setNewAlias("");
-      setNewCP("");
-      setNewStreet("");
-      setNewNumber("");
-    } catch (error) {
-      alert(error);
-    }
+    const newAddress: Address = {
+      id: generateId(),
+      alias: newAlias,
+      postalCode: newCP,
+      street: newStreet,
+      number: newNumber,
+      deliveryType: "D",
+    };
+    setAddresses([...addresses, newAddress]);
+    setSelectedId(newAddress.id);
+    setIsAddingHome(false);
+    setNewAlias("");
+    setNewCP("");
+    setNewStreet("");
+    setNewNumber("");
   };
 
   const handleDelete = (id: string, e: React.MouseEvent) => {
