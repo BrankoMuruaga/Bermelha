@@ -1,6 +1,6 @@
 export default function LoadingScreen() {
   return (
-    <div className="fixed inset-0 surface-base flex flex-col items-center justify-center z-50">
+    <div className="fixed inset-0 surface-base flex flex-col items-center justify-center z-10">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 500 200"
