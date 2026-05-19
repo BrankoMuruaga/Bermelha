@@ -14,7 +14,7 @@ const client = new MercadoPagoConfig({
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { cartItems } = body;
+    const { cartItems, shippingInfo } = body;
 
     if (!cartItems || cartItems.length === 0) {
       return new Response(JSON.stringify({ error: "El carrito está vacío" }), {
@@ -60,6 +60,20 @@ export const POST: APIRoute = async ({ request }) => {
         currency_id: "ARS",
       };
     });
+
+    if (shippingInfo && shippingInfo.cost > 0) {
+      const tipoEnvio =
+        shippingInfo.address?.deliveryType === "D" ? "Domicilio" : "Sucursal";
+      const cpEnvio = shippingInfo.address?.postalCode || "";
+
+      preferenceItems.push({
+        id: "costo-envio",
+        title: `Costo de envío (${tipoEnvio} - CP: ${cpEnvio})`,
+        quantity: 1,
+        unit_price: Number(shippingInfo.cost),
+        currency_id: "ARS",
+      });
+    }
 
     const preference = new Preference(client);
 
