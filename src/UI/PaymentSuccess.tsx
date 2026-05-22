@@ -38,29 +38,27 @@ const PaymentSuccess = () => {
       </p>
 
       {/* Sección de Correo */}
-      <div className="flex flex-col gap-1 surface-high ghost-border px-4 py-5 rounded-md w-full mb-8">
-        <div className="flex items-center justify-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-5 h-5 text-primary"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-            />
-          </svg>
-          <p className="text-body-md text-on-surface font-semibold m-0">
-            Te enviamos el comprobante por mail
-          </p>
-        </div>
-        <p className="text-body-sm text-on-surface-variant m-0">
+      <div className="flex flex-col justify-center items-center gap-1 surface-high ghost-border px-4 py-5 rounded-md w-full mb-8">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-5 h-5 text-primary"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+          />
+        </svg>
+        <p className="text-body-md text-on-surface font-semibold m-0 text-pretty">
+          Te enviamos el comprobante al mail
+        </p>
+        <p className="text-body-sm text-on-surface-variant m-0 text-pretty">
           Revisá tu bandeja de entrada. Por las dudas, chequeá también la
-          carpeta de promociones o correo no deseado.
+          bandeja de spam.
         </p>
       </div>
 
