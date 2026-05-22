@@ -185,6 +185,9 @@ const Carrito = ({
                 canCheckout={canCheckout}
                 errorMessage={errorMessage}
                 isLoadingMP={isLoadingMP}
+                isAddressSelected={selectedAddress !== null}
+                tieneEnvioGratis={tieneEnvioGratis}
+                montoParaEnvioGratis={montoParaEnvioGratis}
                 onMercadoPago={handleMercadoPago}
                 onWhatsapp={handleWhatsapp}
               />
