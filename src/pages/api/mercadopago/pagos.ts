@@ -130,10 +130,6 @@ function getPaymentApprovedHtmlTemplate(paymentId: string): string {
                   <p style="font-family: Arial, Helvetica, sans-serif; font-size: 1rem; line-height: 1.5; color: #524744; font-weight: 400; letter-spacing: 0.5px;">
                     Las manos mágicas detrás de Bermelha ya se están preparando para tejer tu pedido. Recordá que nuestros amigurumis son piezas 100% artesanales que llevan tiempo y dedicación para quedar perfectos.
                   </p>
-                  
-                  <p style="font-family: Arial, Helvetica, sans-serif; font-size: 1rem; line-height: 1.5; color: #524744; font-weight: 400; letter-spacing: 0.5px; margin-top: 16px;">
-                    Te vamos a volver a escribir en cuanto haya novedades sobre el envío o para coordinar el retiro.
-                  </p>
 
                   <p style="font-family: Arial, Helvetica, sans-serif; font-size: 1rem; line-height: 1.5; color: #323233; margin-top: 32px; font-weight: 600;">
                     ¡Gracias por apoyar el trabajo artesanal!
@@ -168,13 +164,6 @@ export const POST: APIRoute = async ({ request, url }) => {
   try {
     const secret = import.meta.env.MP_WEBHOOK_SECRET;
 
-    if (!isWebhookSignatureValid(request, url, secret)) {
-      console.error("Firma inválida: Rechazando petición externa");
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-      });
-    }
-
     const body = await request.json();
 
     if (body.type !== "payment" && body.topic !== "payment") {
@@ -182,6 +171,13 @@ export const POST: APIRoute = async ({ request, url }) => {
         JSON.stringify({ success: true, message: "Ignorado - No es un pago" }),
         { status: 200 },
       );
+    }
+
+    if (!isWebhookSignatureValid(request, url, secret)) {
+      console.error("Firma inválida: Rechazando petición externa");
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+      });
     }
 
     const paymentId = body.data?.id;
@@ -195,12 +191,8 @@ export const POST: APIRoute = async ({ request, url }) => {
     const paymentData = await payment.get({ id: paymentId });
 
     if (paymentData.status === "approved") {
-      console.log(`¡Pago ${paymentId} aprobado de forma segura!`);
-
       const emailCliente =
         paymentData.metadata?.email_contacto || paymentData.payer?.email;
-
-      console.log(`Enviando email de confirmación a ${emailCliente}`);
 
       if (emailCliente) {
         const { data, error } = await resend.emails.send({
