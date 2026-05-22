@@ -20,7 +20,6 @@ export const FormInput = ({
   );
 };
 
-// --- SELECT CUSTOM CON FILTRADO ---
 interface SelectOption {
   value: string;
   label: string;
@@ -37,7 +36,7 @@ interface CustomSelectProps extends Omit<
   onSelect: (value: string) => void;
   disabled?: boolean;
   required?: boolean;
-  name?: string; // <-- Declaramos explícitamente el campo name
+  name?: string;
 }
 
 export const CustomSelect = ({
@@ -47,7 +46,7 @@ export const CustomSelect = ({
   onSelect,
   disabled = false,
   required = false,
-  name, // Lo desestructuramos si querés pasarlo de forma explícita
+  name,
   ...props
 }: CustomSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -93,7 +92,7 @@ export const CustomSelect = ({
       <div className="relative flex items-center">
         <input
           {...props}
-          name={name} // <-- Se asigna de forma segura al input nativo
+          name={name}
           autoComplete="disabled-autocomplete"
           autoCorrect="off"
           autoCapitalize="off"
