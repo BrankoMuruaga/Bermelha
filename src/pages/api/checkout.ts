@@ -18,7 +18,7 @@ interface ConfiguracionGlobalFields {
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { cartItems, shippingInfo, prayer, metadata } = body;
+    const { cartItems, shippingInfo, prayer } = body;
     const { email } = prayer || {};
 
     if (!email) {
