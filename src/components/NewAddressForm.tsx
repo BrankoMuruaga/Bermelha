@@ -1,75 +1,171 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "./Button";
+import { FormInput, CustomSelect } from "./FormFields";
+import PROVINCIAS_OPCIONES from "../data/provincias.json";
 
 interface NewAddressFormProps {
-  handleAddHomeAddress: (e: React.FormEvent) => void;
-  newAlias: string;
-  setNewAlias: React.Dispatch<React.SetStateAction<string>>;
-  newStreet: string;
-  setNewStreet: React.Dispatch<React.SetStateAction<string>>;
-  newNumber: string;
-  setNewNumber: React.Dispatch<React.SetStateAction<string>>;
-  newCP: string;
-  setNewCP: React.Dispatch<React.SetStateAction<string>>;
   setIsAddingHome: React.Dispatch<React.SetStateAction<boolean>>;
+  // El padre solo recibe el callback con la dirección ya armada y lista para guardar
+  onSaveAddress: (addressData: {
+    alias: string;
+    street: string;
+    number: string;
+    pisoDepto: string;
+    postalCode: string;
+    provincia: string;
+    localidad: string;
+    nombreApellido: string;
+    telefono: string;
+  }) => void;
 }
 
 const NewAddressForm = ({
-  handleAddHomeAddress,
-  newAlias,
-  setNewAlias,
-  newStreet,
-  setNewStreet,
-  newNumber,
-  setNewNumber,
-  newCP,
-  setNewCP,
   setIsAddingHome,
+  onSaveAddress,
 }: NewAddressFormProps) => {
+  // ─── ESTADOS LOCALES (Se destruyen y reinician solos al cerrar/abrir) ───
+  const [nombreApellido, setNombreApellido] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [provinciaCod, setProvinciaCod] = useState("");
+  const [localidad, setLocalidad] = useState("");
+  const [newStreet, setNewStreet] = useState("");
+  const [newNumber, setNewNumber] = useState("");
+  const [pisoDepto, setPisoDepto] = useState("");
+  const [newCP, setNewCP] = useState("");
+  const [newAlias, setNewAlias] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const provElegida = PROVINCIAS_OPCIONES.find(
+      (p) => p.value === provinciaCod,
+    );
+
+    // Le devolvemos los datos limpios al manejador del padre
+    onSaveAddress({
+      alias: newAlias || `Domicilio ${newStreet} ${newNumber}`,
+      street: newStreet,
+      number: newNumber,
+      pisoDepto,
+      postalCode: newCP,
+      provincia: provElegida?.label || "",
+      localidad,
+      nombreApellido,
+      telefono,
+    });
+  };
+
   return (
     <form
-      onSubmit={handleAddHomeAddress}
+      onSubmit={handleSubmit}
       className="surface-high ghost-border p-5 rounded-md flex flex-col gap-4 w-full mt-2"
     >
-      <p className="text-label-md text-on-surface-variant m-0">
-        NUEVA DIRECCIÓN
+      <p className="text-label-md text-on-surface-variant m-0 font-bold tracking-wide">
+        DATOS PARA ENVÍO A DOMICILIO
       </p>
-      <div className="grid grid-cols-2 gap-3">
-        <input
+
+      {/* SECCIÓN 1: IDENTIFICACIÓN DEL DESTINATARIO */}
+      <div className="flex flex-col gap-3">
+        <FormInput
           required
-          placeholder="Alias (Ej: Casa, Trabajo)"
-          value={newAlias}
-          onChange={(e) => setNewAlias(e.target.value)}
-          className="col-span-2 p-3 bg-surface-container-lowest rounded-md text-body-md ghost-border focus:ring-2 focus:ring-primary/30 outline-none transition-smooth"
+          name="nombreApellido"
+          placeholder="Nombre y Apellido de quien recibe *"
+          value={nombreApellido}
+          onChange={(e) => setNombreApellido(e.target.value)}
         />
-        <input
+        <FormInput
           required
-          placeholder="Calle"
-          value={newStreet}
-          onChange={(e) => setNewStreet(e.target.value)}
-          className="col-span-2 p-3 bg-surface-container-lowest rounded-md text-body-md ghost-border focus:ring-2 focus:ring-primary/30 outline-none transition-smooth"
-        />
-        <input
-          required
-          type="number"
-          placeholder="Altura"
-          value={newNumber}
-          onChange={(e) => setNewNumber(e.target.value)}
-          className="col-span-1 p-3 bg-surface-container-lowest rounded-md text-body-md ghost-border focus:ring-2 focus:ring-primary/30 outline-none transition-smooth"
-        />
-        <input
-          required
-          type="number"
-          placeholder="Código Postal"
-          value={newCP}
-          onChange={(e) => setNewCP(e.target.value)}
-          className="col-span-1 p-3 bg-surface-container-lowest rounded-md text-body-md ghost-border focus:ring-2 focus:ring-primary/30 outline-none transition-smooth"
+          name="telefono"
+          type="tel"
+          placeholder="Teléfono de contacto *"
+          value={telefono}
+          onChange={(e) => setTelefono(e.target.value)}
         />
       </div>
+
+      {/* SECCIÓN 2: UBICACIÓN GEOGRÁFICA */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="flex flex-col gap-1">
+          <label className="text-[11px] text-on-surface-variant font-medium pl-1">
+            Provincia *
+          </label>
+          <CustomSelect
+            required
+            name="provincia"
+            placeholder="Seleccione Provincia"
+            options={PROVINCIAS_OPCIONES}
+            selectedValue={provinciaCod}
+            onSelect={(val) => setProvinciaCod(val)}
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-[11px] text-on-surface-variant font-medium pl-1">
+            Localidad / Ciudad *
+          </label>
+          <FormInput
+            required
+            name="localidad"
+            placeholder="Ej: Hurlingham"
+            value={localidad}
+            onChange={(e) => setLocalidad(e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* SECCIÓN 3: DIRECCIÓN FÍSICA ESPECÍFICA */}
+      <div className="grid grid-cols-3 gap-3">
+        <div className="col-span-2">
+          <FormInput
+            required
+            name="street"
+            placeholder="Calle *"
+            value={newStreet}
+            onChange={(e) => setNewStreet(e.target.value)}
+          />
+        </div>
+        <div>
+          <FormInput
+            required
+            name="number"
+            type="text"
+            placeholder="Altura *"
+            value={newNumber}
+            onChange={(e) => setNewNumber(e.target.value)}
+          />
+        </div>
+        <div className="col-span-2">
+          <FormInput
+            name="pisoDepto"
+            placeholder="Piso / Depto (Opcional)"
+            value={pisoDepto}
+            onChange={(e) => setPisoDepto(e.target.value)}
+          />
+        </div>
+        <div>
+          <FormInput
+            required
+            name="cp"
+            type="number"
+            placeholder="CP *"
+            value={newCP}
+            onChange={(e) => setNewCP(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <FormInput
+        name="alias"
+        placeholder="Alias de la dirección (Ej: Mi Casa, Trabajo) - Opcional"
+        value={newAlias}
+        onChange={(e) => setNewAlias(e.target.value)}
+      />
+
+      {/* ACCIONES */}
       <div className="flex gap-3 mt-2">
         <Button
           variant="primary"
-          label="Guardar"
+          label="Guardar Dirección"
           type="submit"
           className="flex-1 justify-center"
         />

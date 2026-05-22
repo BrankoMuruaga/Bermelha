@@ -16,8 +16,14 @@ const productos = itemsProductos.map((item: any) => ({
 
 const itemsConfiguracion = await getEntries("configuracionGlobal");
 const telefono = itemsConfiguracion[0].fields.telefono;
+const montoParaEnvioGratis = itemsConfiguracion[0].fields.montoParaEnvioGratis;
 ---
 
 <Layout>
-  <MainCarrito productos={productos} telefono={telefono} client:load />
+  <MainCarrito
+    productos={productos}
+    telefono={telefono}
+    montoParaEnvioGratis={montoParaEnvioGratis}
+    client:load
+  />
 </Layout>
