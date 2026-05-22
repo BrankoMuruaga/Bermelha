@@ -164,10 +164,6 @@ function getPaymentApprovedHtmlTemplate(paymentId: string): string {
   `;
 }
 
-// ============================================================================
-// CONTROLADOR PRINCIPAL DEL WEBHOOK (Endpoint)
-// ============================================================================
-
 export const POST: APIRoute = async ({ request, url }) => {
   try {
     const secret = import.meta.env.MP_WEBHOOK_SECRET;
@@ -201,7 +197,10 @@ export const POST: APIRoute = async ({ request, url }) => {
     if (paymentData.status === "approved") {
       console.log(`¡Pago ${paymentId} aprobado de forma segura!`);
 
-      const emailCliente = paymentData.payer?.email;
+      const emailCliente =
+        paymentData.metadata?.email_contacto || paymentData.payer?.email;
+
+      console.log(`Enviando email de confirmación a ${emailCliente}`);
 
       if (emailCliente) {
         const { data, error } = await resend.emails.send({

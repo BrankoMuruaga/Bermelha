@@ -11,10 +11,24 @@ const client = new MercadoPagoConfig({
   accessToken: import.meta.env.MP_ACCESS_TOKEN,
 });
 
+interface ConfiguracionGlobalFields {
+  montoParaEnvioGratis: number;
+}
+
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { cartItems, shippingInfo } = body;
+    const { cartItems, shippingInfo, prayer, metadata } = body;
+    const { email } = prayer || {};
+
+    if (!email) {
+      return new Response(
+        JSON.stringify({ error: "El email de contacto es requerido" }),
+        {
+          status: 400,
+        },
+      );
+    }
 
     if (!cartItems || cartItems.length === 0) {
       return new Response(JSON.stringify({ error: "El carrito está vacío" }), {
@@ -24,10 +38,26 @@ export const POST: APIRoute = async ({ request }) => {
 
     const itemIds = cartItems.map((item: any) => item.id);
 
-    const entries = await contentfulClient.getEntries({
-      "sys.id[in]": itemIds.join(","),
-      content_type: "producto",
-    });
+    const [entries, configEntries] = await Promise.all([
+      contentfulClient.getEntries({
+        "sys.id[in]": itemIds.join(","),
+        content_type: "producto",
+      }),
+      contentfulClient.getEntries({
+        content_type: "configuracionGlobal",
+        limit: 1, // Solo nos interesa el registro principal
+      }),
+    ]);
+
+    let montoParaEnvioGratis = 60000;
+
+    if (configEntries.items.length > 0) {
+      const configFields = configEntries.items[0]
+        .fields as unknown as ConfiguracionGlobalFields;
+      if (configFields && configFields.montoParaEnvioGratis) {
+        montoParaEnvioGratis = Number(configFields.montoParaEnvioGratis);
+      }
+    }
 
     if (entries.items.length === 0) {
       return new Response(
@@ -37,6 +67,8 @@ export const POST: APIRoute = async ({ request }) => {
         },
       );
     }
+
+    let subtotalRealServidor = 0;
 
     const preferenceItems = cartItems.map((cartItem: any) => {
       const cmsProduct = entries.items.find(
@@ -52,6 +84,11 @@ export const POST: APIRoute = async ({ request }) => {
         precio: number;
       };
 
+      const cantidad = Number(cartItem.quantity);
+      const precioUnitario = Number(fields.precio);
+
+      subtotalRealServidor += precioUnitario * cantidad;
+
       return {
         id: cmsProduct.sys.id,
         title: fields.nombre,
@@ -61,7 +98,9 @@ export const POST: APIRoute = async ({ request }) => {
       };
     });
 
-    if (shippingInfo && shippingInfo.cost > 0) {
+    const superaEnvioGratis = subtotalRealServidor >= montoParaEnvioGratis;
+
+    if (shippingInfo && shippingInfo.cost > 0 && !superaEnvioGratis) {
       const tipoEnvio =
         shippingInfo.address?.deliveryType === "D" ? "Domicilio" : "Sucursal";
       const cpEnvio = shippingInfo.address?.postalCode || "";
@@ -87,6 +126,12 @@ export const POST: APIRoute = async ({ request }) => {
           },
           auto_return: "approved",
           notification_url: `${import.meta.env.PUBLIC_BASE_URL}/api/mercadopago/pagos`,
+          payer: {
+            email,
+          },
+          metadata: {
+            email_contacto: email.trim(),
+          },
         },
       })
       .then((data) => {
