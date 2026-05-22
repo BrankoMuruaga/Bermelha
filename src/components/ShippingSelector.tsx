@@ -5,16 +5,35 @@ import { MapPin, Store } from "lucide-react";
 import ShippingSection from "@/components/ShippingSection";
 import AddressCard from "./AddressCard";
 import NewAddressForm from "./NewAddressForm";
-import ShippingModal from "./ShippingModal"; // <-- IMPORT DEL MODAL
+import ShippingModal from "./ShippingModal";
+import { NewBranchForm, type BranchAddressData } from "./NewBranchForm";
 
-export interface Address {
+export interface BaseAddress {
   id: string;
   alias: string;
   postalCode: string;
+  nombreApellido: string;
+  telefono: string;
+  email: string;
+  deliveryType: "D" | "S";
+  provincia: string;
+  localidad: string;
+}
+
+export interface HomeAddress extends BaseAddress {
+  deliveryType: "D";
+  pisoDepto?: string;
   street: string;
   number: string;
-  deliveryType: "D" | "S";
 }
+
+export interface BranchAddress extends BaseAddress {
+  deliveryType: "S";
+  sucursalNombre: string;
+  codSucursal: string;
+}
+
+export type Address = HomeAddress | BranchAddress;
 
 interface ShippingSelectorProps {
   onShippingCalculated: (cost: number, address: Address | null) => void;
@@ -35,16 +54,16 @@ export const ShippingSelector = ({
 
   const [isOpen, setIsOpen] = useState(false);
   const [isAddingHome, setIsAddingHome] = useState(false);
+  const [isAddingBranch, setIsAddingBranch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [newAlias, setNewAlias] = useState("");
-  const [newCP, setNewCP] = useState("");
-  const [newStreet, setNewStreet] = useState("");
-  const [newNumber, setNewNumber] = useState("");
-
-  const homeAddresses = addresses.filter((a) => a.deliveryType === "D");
-  const branchAddresses = addresses.filter((a) => a.deliveryType === "S");
+  const homeAddresses = addresses.filter(
+    (a): a is HomeAddress => a.deliveryType === "D",
+  );
+  const branchAddresses = addresses.filter(
+    (a): a is BranchAddress => a.deliveryType === "S",
+  );
   const selectedAddress = addresses.find((a) => a.id === selectedId);
 
   useEffect(() => {
@@ -59,7 +78,6 @@ export const ShippingSelector = ({
       setError(null);
 
       try {
-        // Petición real a tu propio servidor de Astro
         const response = await fetch("/api/envio/correoargentino/costo", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -70,9 +88,7 @@ export const ShippingSelector = ({
         });
 
         if (!response.ok) {
-          throw new Error(
-            `Error al cotizar el envío: ${response.statusText}. Detalles: ${await response.text()}`,
-          );
+          throw new Error(`Error al cotizar el envío: ${response.statusText}`);
         }
 
         const data = await response.json();
@@ -89,29 +105,54 @@ export const ShippingSelector = ({
     fetchRate();
   }, [selectedId, addresses]);
 
-  const handleAddHomeAddress = (e: React.FormEvent) => {
-    e.preventDefault();
-    const generateId = () => {
-      if (typeof crypto !== "undefined" && crypto.randomUUID) {
-        return crypto.randomUUID();
-      }
-      return Date.now().toString(36) + Math.random().toString(36).substring(2);
-    };
-    const newAddress: Address = {
+  const generateId = () => {
+    if (typeof crypto !== "undefined" && crypto.randomUUID) {
+      return crypto.randomUUID();
+    }
+    return Date.now().toString(36) + Math.random().toString(36).substring(2);
+  };
+
+  const handleAddHomeAddress = (homeData: {
+    alias: string;
+    street: string;
+    number: string;
+    pisoDepto: string;
+    postalCode: string;
+    provincia: string;
+    localidad: string;
+    nombreApellido: string;
+    telefono: string;
+  }) => {
+    const newAddress: HomeAddress = {
       id: generateId(),
-      alias: newAlias,
-      postalCode: newCP,
-      street: newStreet,
-      number: newNumber,
       deliveryType: "D",
+      email: "",
+      ...homeData,
     };
+
     setAddresses([...addresses, newAddress]);
     setSelectedId(newAddress.id);
     setIsAddingHome(false);
-    setNewAlias("");
-    setNewCP("");
-    setNewStreet("");
-    setNewNumber("");
+  };
+
+  const handleAddBranchAddress = (branchData: BranchAddressData) => {
+    const newAddress: BranchAddress = {
+      id: generateId(),
+      alias: branchData.alias,
+      postalCode: branchData.postalCode,
+      deliveryType: "S",
+      nombreApellido: branchData.nombreApellido,
+      telefono: branchData.telefono,
+      email: branchData.email,
+      provincia: branchData.provincia,
+      localidad: branchData.localidad,
+      sucursalNombre: branchData.sucursalNombre,
+      codSucursal: branchData.codSucursal,
+    };
+
+    setAddresses([...addresses, newAddress]);
+    setSelectedId(newAddress.id);
+    setIsAddingBranch(false);
   };
 
   const handleDelete = (id: string, e: React.MouseEvent) => {
@@ -130,7 +171,7 @@ export const ShippingSelector = ({
   };
 
   return (
-    <div className="w-full flex flex-col gap-2 mb-4">
+    <div className="w-full flex flex-col justify-between items-center">
       {selectedAddress ? (
         <div className="w-full py-2 rounded-md flex justify-between items-center">
           <div className="flex flex-col">
@@ -139,8 +180,8 @@ export const ShippingSelector = ({
             </p>
             <p className="text-body-md sm:text-body-sm text-on-surface-variant m-0">
               {selectedAddress.deliveryType === "D"
-                ? "A Domicilio"
-                : "Retiro Sucursal"}{" "}
+                ? `A Domicilio: ${(selectedAddress as HomeAddress).street} ${(selectedAddress as HomeAddress).number}`
+                : `Retiro: ${(selectedAddress as BranchAddress).sucursalNombre}`}{" "}
               • CP: {selectedAddress.postalCode}
             </p>
           </div>
@@ -168,13 +209,16 @@ export const ShippingSelector = ({
         <p className="text-body-sm text-red-500 text-center">{error}</p>
       )}
 
-      {/* MODAL DE SELECCIÓN DE ENVÍO */}
-
       <ShippingModal
         isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
+        onClose={() => {
+          setIsOpen(false);
+          setIsAddingHome(false);
+          setIsAddingBranch(false);
+        }}
         title="Método de entrega"
       >
+        {/* SECCIÓN 1: A DOMICILIO */}
         <ShippingSection
           title="A DOMICILIO"
           icon={<MapPin size={20} className="text-primary" />}
@@ -201,21 +245,16 @@ export const ShippingSelector = ({
             <Button
               variant="secondary"
               label="+ Agregar nuevo domicilio"
-              onClick={() => setIsAddingHome(true)}
+              onClick={() => {
+                setIsAddingHome(true);
+                setIsAddingBranch(false);
+              }}
               className="w-full justify-center ghost-border border-dashed"
             />
           ) : (
             <NewAddressForm
-              handleAddHomeAddress={handleAddHomeAddress}
+              onSaveAddress={handleAddHomeAddress}
               setIsAddingHome={setIsAddingHome}
-              newAlias={newAlias}
-              setNewAlias={setNewAlias}
-              newCP={newCP}
-              setNewCP={setNewCP}
-              newStreet={newStreet}
-              setNewStreet={setNewStreet}
-              newNumber={newNumber}
-              setNewNumber={setNewNumber}
             />
           )}
         </ShippingSection>
@@ -232,8 +271,8 @@ export const ShippingSelector = ({
                   key={addr.id}
                   id={addr.id}
                   alias={addr.alias}
-                  street={addr.street}
-                  number={addr.number}
+                  street={addr.sucursalNombre}
+                  number=""
                   postalCode={addr.postalCode}
                   selectedId={selectedId}
                   handleSelectAndClose={handleSelectAndClose}
@@ -243,14 +282,22 @@ export const ShippingSelector = ({
             </div>
           )}
 
-          <Button
-            variant="secondary"
-            label="+ Agregar nueva sucursal"
-            onClick={() =>
-              alert("La búsqueda de sucursales estará disponible pronto.")
-            }
-            className="w-full justify-center ghost-border border-dashed"
-          />
+          {!isAddingBranch ? (
+            <Button
+              variant="secondary"
+              label="+ Agregar nueva sucursal"
+              onClick={() => {
+                setIsAddingBranch(true);
+                setIsAddingHome(false);
+              }}
+              className="w-full justify-center ghost-border border-dashed"
+            />
+          ) : (
+            <NewBranchForm
+              onSaveBranchAddress={handleAddBranchAddress}
+              setIsAddingBranch={setIsAddingBranch}
+            />
+          )}
         </ShippingSection>
       </ShippingModal>
     </div>

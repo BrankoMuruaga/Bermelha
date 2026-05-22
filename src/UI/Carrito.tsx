@@ -6,6 +6,7 @@ import { CartProvider, useCart } from "@/context/CartContext";
 import { WHATSAPP_URL } from "@/data/config";
 import { CartSummary } from "@/components/CartSummary";
 import { CartWarnings } from "@/components/CartWarnings";
+import { FormInput } from "@/components/FormFields";
 
 interface Product {
   id: string;
@@ -20,13 +21,19 @@ interface Product {
 interface CarritoProps {
   telefono: number;
   productos: Product[];
+  montoParaEnvioGratis: number;
 }
 
-const Carrito = ({ productos, telefono }: CarritoProps) => {
+const Carrito = ({
+  productos,
+  telefono,
+  montoParaEnvioGratis,
+}: CarritoProps) => {
   const { cart, hydrated, clearCart } = useCart();
   const [isLoadingMP, setIsLoadingMP] = useState(false);
   const [shippingCost, setShippingCost] = useState<number>(0);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+  const [email, setEmail] = useState("");
 
   const productosEnCarrito = useMemo(() => {
     return cart.map((item) => {
@@ -55,7 +62,19 @@ const Carrito = ({ productos, telefono }: CarritoProps) => {
     return cart.reduce((acc, i) => acc + i.quantity, 0);
   }, [cart]);
 
-  const canCheckout = selectedAddress !== null && shippingCost > 0;
+  const tieneEnvioGratis = subtotal >= montoParaEnvioGratis;
+  const costoEnvioFinal = tieneEnvioGratis ? 0 : shippingCost;
+
+  const canCheckout =
+    selectedAddress !== null &&
+    (costoEnvioFinal > 0 || tieneEnvioGratis) &&
+    email.trim() !== "";
+
+  const errorMessage = useMemo(() => {
+    if (!selectedAddress) return "Seleccione un método de envío.";
+    if (email.trim() === "") return "Por favor, ingrese un email de contacto.";
+    return undefined;
+  }, [selectedAddress, email]);
 
   const handleMercadoPago = async () => {
     setIsLoadingMP(true);
@@ -65,7 +84,8 @@ const Carrito = ({ productos, telefono }: CarritoProps) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           cartItems: productosEnCarrito,
-          shippingInfo: { cost: shippingCost, address: selectedAddress },
+          shippingInfo: { cost: costoEnvioFinal, address: selectedAddress },
+          prayer: { email: email.trim() },
         }),
       });
 
@@ -82,15 +102,29 @@ const Carrito = ({ productos, telefono }: CarritoProps) => {
   };
 
   const handleWhatsapp = () => {
-    const addressText = selectedAddress
-      ? `\n📍 Envío a: ${selectedAddress.street} ${selectedAddress.number} (${selectedAddress.postalCode}) - ${selectedAddress.deliveryType === "D" ? "Domicilio" : "Sucursal"}\nCosto de envío: $${shippingCost}`
-      : "";
+    const costoEnvioFinal = tieneEnvioGratis ? 0 : shippingCost;
+    const costoEnvioTexto = tieneEnvioGratis
+      ? "¡Gratis!"
+      : `$${shippingCost.toLocaleString()}`;
+
+    let addressText = "";
+    if (selectedAddress) {
+      if (selectedAddress.deliveryType === "D") {
+        addressText = `\n📍 Envío a Domicilio: ${selectedAddress.street} ${selectedAddress.number} (CP: ${selectedAddress.postalCode})`;
+      } else {
+        addressText = `\n📍 Retiro en Sucursal: ${selectedAddress.sucursalNombre} (CP: ${selectedAddress.postalCode})`;
+      }
+      addressText += `\n👤 Destinatario: ${selectedAddress.nombreApellido || "No especificado"}\n📞 Teléfono: ${selectedAddress.telefono || "No especificado"}\nCosto de envío: ${costoEnvioTexto}`;
+    }
 
     const message = `Hola! Me gustaría hacer un pedido:\n\n${productosEnCarrito
-      .map((p) => `- ${p.nombre} (x${p.quantity}): $${p.precio}`)
+      .map(
+        (p) =>
+          `- ${p.nombre} (x${p.quantity}): $${(p.precio * (p.quantity || 1)).toLocaleString()}`,
+      )
       .join(
         "\n",
-      )}${addressText}\n\n*Total a pagar: $${subtotal + shippingCost}*`;
+      )}\n${addressText}\n📧 Email de contacto: ${email}\n\n*Total a pagar: $${(subtotal + costoEnvioFinal).toLocaleString()}*`;
 
     const url = `${WHATSAPP_URL}${telefono}?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
@@ -111,18 +145,34 @@ const Carrito = ({ productos, telefono }: CarritoProps) => {
         <>
           <CartWarnings />
 
-          <div className="flex w-full flex-col gap-4">
-            <p className="text-label-md text-on-surface-variant">
-              DATOS DE ENVÍO
-            </p>
-            <ShippingSelector
-              onShippingCalculated={(cost, addr) => {
-                setShippingCost(cost);
-                setSelectedAddress(addr);
-              }}
-            />
-          </div>
-          <section className="w-full flex flex-col items-start">
+          {/* Se corrigió la alineación vertical a items-start */}
+          <section className="w-full flex flex-col lg:flex-row items-start gap-6 mt-2">
+            <div className="flex w-full flex-col gap-3 lg:w-2/3 px-3">
+              <p className="text-label-md text-on-surface-variant">
+                DATOS DE ENVÍO
+              </p>
+              <ShippingSelector
+                onShippingCalculated={(cost, addr) => {
+                  setShippingCost(cost);
+                  setSelectedAddress(addr);
+                }}
+              />
+            </div>
+            <div className="flex w-full flex-col gap-3 lg:w-1/3 px-3">
+              <p className="text-label-md text-on-surface-variant">
+                EMAIL DE CONTACTO
+              </p>
+              <FormInput
+                placeholder="Email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+          </section>
+
+          <section className="w-full flex flex-col items-start mt-4">
             <section className="w-full flex flex-col lg:flex-row items-start gap-8">
               <div className="w-full lg:w-2/3">
                 <CarritoList productos={productosEnCarrito} />
@@ -131,8 +181,9 @@ const Carrito = ({ productos, telefono }: CarritoProps) => {
               <CartSummary
                 totalItems={totalItems}
                 subtotal={subtotal}
-                shippingCost={shippingCost}
+                shippingCost={costoEnvioFinal}
                 canCheckout={canCheckout}
+                errorMessage={errorMessage}
                 isLoadingMP={isLoadingMP}
                 onMercadoPago={handleMercadoPago}
                 onWhatsapp={handleWhatsapp}
@@ -145,10 +196,18 @@ const Carrito = ({ productos, telefono }: CarritoProps) => {
   );
 };
 
-export default function MainCarrito({ productos, telefono }: CarritoProps) {
+export default function MainCarrito({
+  productos,
+  telefono,
+  montoParaEnvioGratis,
+}: CarritoProps) {
   return (
     <CartProvider>
-      <Carrito productos={productos} telefono={telefono} />
+      <Carrito
+        productos={productos}
+        telefono={telefono}
+        montoParaEnvioGratis={montoParaEnvioGratis}
+      />
     </CartProvider>
   );
 }

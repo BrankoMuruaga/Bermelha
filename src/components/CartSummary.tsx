@@ -6,6 +6,7 @@ interface CartSummaryProps {
   subtotal: number;
   shippingCost: number;
   canCheckout: boolean;
+  errorMessage?: string;
   isLoadingMP: boolean;
   onMercadoPago: () => void;
   onWhatsapp: () => void;
@@ -16,7 +17,9 @@ export const CartSummary = ({
   subtotal,
   shippingCost,
   canCheckout,
+  errorMessage,
   isLoadingMP,
+
   onMercadoPago,
   onWhatsapp,
 }: CartSummaryProps) => {
@@ -41,9 +44,7 @@ export const CartSummary = ({
             Envío
           </p>
           <p className="text-body-md text-on-surface">
-            {shippingCost > 0
-              ? `$${shippingCost.toLocaleString()}`
-              : "A calcular"}
+            {shippingCost > 0 ? `$${shippingCost.toLocaleString()}` : "Gratis"}
           </p>
         </div>
       </div>
@@ -57,7 +58,7 @@ export const CartSummary = ({
 
       {!canCheckout && (
         <p className="text-[12px] text-red-500 text-center font-semibold mb-1">
-          Seleccione un método de envío.
+          {errorMessage}
         </p>
       )}
 
@@ -70,9 +71,7 @@ export const CartSummary = ({
             variant="primary"
             label={isLoadingMP ? "Conectando..." : "Pagar con Mercado Pago"}
             icon={
-              isLoadingMP ? (
-                <span className="animate-pulse">Conectando...</span>
-              ) : (
+              !isLoadingMP && (
                 <img src="./logo-MP.svg" alt="Mercado Pago" className="w-14" />
               )
             }
@@ -91,6 +90,7 @@ export const CartSummary = ({
         <Button
           variant="primary"
           label="Solicitar por WhatsApp"
+          icon={<img src="./whatsapp.svg" alt="WhatsApp" className="w-5" />}
           onClick={onWhatsapp}
           className="w-80 h-12 sm:h-16 justify-center"
         />
