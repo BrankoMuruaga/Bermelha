@@ -89,11 +89,24 @@ export const POST: APIRoute = async ({ request }) => {
 
       subtotalRealServidor += precioUnitario * cantidad;
 
+      let customizationsText = "";
+      if (
+        cartItem.customizations &&
+        typeof cartItem.customizations === "object" &&
+        !Array.isArray(cartItem.customizations)
+      ) {
+        customizationsText = Object.entries(cartItem.customizations)
+          .map(([key, custom]: [string, any]) => {
+            return ` - ${custom.label || key}: ${custom.value}`;
+          })
+          .join("");
+      }
+
       return {
         id: cmsProduct.sys.id,
-        title: fields.nombre,
-        quantity: Number(cartItem.quantity),
-        unit_price: Number(fields.precio),
+        title: fields.nombre + customizationsText,
+        quantity: cantidad,
+        unit_price: precioUnitario,
         currency_id: "ARS",
       };
     });
@@ -151,7 +164,9 @@ export const POST: APIRoute = async ({ request }) => {
     console.error("Error procesando checkout:", error);
     return new Response(
       JSON.stringify({ error: "Error interno del servidor" }),
-      { status: 500 },
+      {
+        status: 500,
+      },
     );
   }
 };
