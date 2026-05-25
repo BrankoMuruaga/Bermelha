@@ -8,6 +8,8 @@ import { CartSummary } from "@/components/CartSummary";
 import { CartWarnings } from "@/components/CartWarnings";
 import { FormInput } from "@/components/FormFields";
 
+type Customizations = Record<string, any>;
+
 interface Product {
   id: string;
   nombre: string;
@@ -16,6 +18,7 @@ interface Product {
   centimetros: number;
   tags?: string[];
   quantity?: number;
+  customizations?: Customizations;
 }
 
 interface CarritoProps {
@@ -39,7 +42,11 @@ const Carrito = ({
     return cart.map((item) => {
       const producto = productos.find((p) => p.id === item.id);
       return producto
-        ? { ...producto, quantity: item.quantity }
+        ? {
+            ...producto,
+            quantity: item.quantity,
+            customizations: item.customizations,
+          }
         : {
             id: item.id,
             nombre: "Producto desconocido",
@@ -47,6 +54,7 @@ const Carrito = ({
             imagenPrincipal: "",
             centimetros: 0,
             quantity: item.quantity,
+            customizations: item.customizations,
           };
     });
   }, [cart, productos]);
@@ -117,14 +125,20 @@ const Carrito = ({
       addressText += `\n👤 Destinatario: ${selectedAddress.nombreApellido || "No especificado"}\n📞 Teléfono: ${selectedAddress.telefono || "No especificado"}\nCosto de envío: ${costoEnvioTexto}`;
     }
 
-    const message = `Hola! Me gustaría hacer un pedido:\n\n${productosEnCarrito
-      .map(
-        (p) =>
-          `- ${p.nombre} (x${p.quantity}): $${(p.precio * (p.quantity || 1)).toLocaleString()}`,
-      )
-      .join(
-        "\n",
-      )}\n${addressText}\n📧 Email de contacto: ${email}\n\n*Total a pagar: $${(subtotal + costoEnvioFinal).toLocaleString()}*`;
+    const itemsTexto = productosEnCarrito
+      .map((p) => {
+        let det = p.nombre;
+        if (p.customizations && Object.keys(p.customizations).length > 0) {
+          const specs = Object.entries(p.customizations)
+            .map(([key, val]) => `${key}: ${val}`)
+            .join(", ");
+          det += ` (${specs})`;
+        }
+        return `- ${det} (x${p.quantity}): $${(p.precio * (p.quantity || 1)).toLocaleString()}`;
+      })
+      .join("\n");
+
+    const message = `Hola! Me gustaría hacer un pedido:\n\n${itemsTexto}\n${addressText}\n📧 Email de contacto: ${email}\n\n*Total a pagar: $${(subtotal + costoEnvioFinal).toLocaleString()}*`;
 
     const url = `${WHATSAPP_URL}${telefono}?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
@@ -145,7 +159,6 @@ const Carrito = ({
         <>
           <CartWarnings />
 
-          {/* Se corrigió la alineación vertical a items-start */}
           <section className="w-full flex flex-col lg:flex-row items-start gap-6 mt-2">
             <div className="flex w-full flex-col gap-3 lg:w-2/3 px-3">
               <p className="text-label-md text-on-surface-variant">
