@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  type InputHTMLAttributes,
+  type ReactNode,
+} from "react";
 import { ChevronDown } from "lucide-react";
 
 // --- INPUT BASE ---
@@ -20,25 +26,25 @@ export const FormInput = ({
   );
 };
 
-interface SelectOption {
+export interface CustomSelectOption {
   value: string;
   label: string;
   sublabel?: string;
+  rightElement?: ReactNode; // <--- Aquí permitimos cualquier componente, HTML o icono
 }
 
 interface CustomSelectProps extends Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
+  InputHTMLAttributes<HTMLInputElement>,
   "onSelect"
 > {
   placeholder: string;
-  options: SelectOption[];
+  options: CustomSelectOption[];
   selectedValue: string;
   onSelect: (value: string) => void;
   disabled?: boolean;
   required?: boolean;
   name?: string;
 }
-
 export const CustomSelect = ({
   placeholder,
   options,
@@ -103,18 +109,26 @@ export const CustomSelect = ({
           value={isOpen ? searchTerm : currentOption ? currentOption.label : ""}
           onFocus={handleInputFocus}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="p-3 pr-10 bg-surface-container-lowest rounded-md text-body-md ghost-border focus:ring-2 focus:ring-primary/30 outline-none transition-smooth w-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="truncate p-3 pr-16 bg-surface-container-lowest rounded-md text-body-md ghost-border focus:ring-2 focus:ring-primary/30 outline-none transition-smooth w-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         />
-        <ChevronDown
-          size={18}
-          className={`absolute right-3 text-on-surface-variant pointer-events-none transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
-        />
+
+        <div className="absolute right-3 flex items-center gap-2 pointer-events-none">
+          {!isOpen && currentOption?.rightElement && (
+            <div className="flex items-center justify-center">
+              {currentOption.rightElement}
+            </div>
+          )}
+          <ChevronDown
+            size={18}
+            className={`text-on-surface-variant transition-transform duration-200 ${
+              isOpen ? "rotate-180" : ""
+            }`}
+          />
+        </div>
       </div>
 
       {isOpen && !disabled && (
-        <ul className="absolute z-20 left-0 right-0 mt-1 max-h-60 overflow-y-auto bg-surface-container-lowest ghost-border rounded-sm shadow-ambient-md flex flex-col">
+        <ul className="absolute z-20 left-0 right-0 mt-1 max-h-60 overflow-y-auto bg-surface-container-lowest ghost-border rounded-sm flex flex-col">
           {filteredOptions.length > 0 ? (
             filteredOptions.map((option) => (
               <li
@@ -124,17 +138,25 @@ export const CustomSelect = ({
                   setSearchTerm(option.label);
                   setIsOpen(false);
                 }}
-                className={`p-3 text-body-md hover:bg-surface-dim cursor-pointer transition-smooth flex flex-col ${
+                className={`p-3 text-body-md hover:bg-surface-dim cursor-pointer transition-smooth flex items-center justify-between gap-4 ${
                   selectedValue === option.value
                     ? "bg-primary/10 text-primary font-semibold"
                     : "text-on-surface"
                 }`}
               >
-                <span>{option.label}</span>
-                {option.sublabel && (
-                  <span className="text-[11px] text-on-surface-variant font-normal">
-                    {option.sublabel}
-                  </span>
+                <div className="flex flex-col min-w-0 flex-1">
+                  <span className="truncate">{option.label}</span>
+                  {option.sublabel && (
+                    <span className="text-[11px] text-on-surface-variant font-normal truncate">
+                      {option.sublabel}
+                    </span>
+                  )}
+                </div>
+
+                {option.rightElement && (
+                  <div className="flex items-center justify-center shrink-0">
+                    {option.rightElement}
+                  </div>
                 )}
               </li>
             ))
