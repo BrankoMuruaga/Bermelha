@@ -13,6 +13,15 @@ const productos = itemsProductos.map((item: any) => ({
   centimetros: item.fields.centimetros,
   tags: item.fields.tags ?? [],
   coleccion: item.fields.coleccion?.fields.nombre ?? null,
+  slug: item.fields.slug,
+  customizations: {
+    color:
+      item.fields.color?.map((colorItem: any) => ({
+        nombre: colorItem.fields.nombre,
+        codigo: colorItem.fields.codigo,
+        codigoHex: colorItem.fields.codigoHexa,
+      })) ?? [],
+  },
 }));
 ---
 
