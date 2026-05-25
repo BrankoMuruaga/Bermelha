@@ -89,6 +89,7 @@ export default function Personalizado({ telefono }: { telefono: number }) {
             onDecrease={() =>
               setForm((f) => ({ ...f, cantidad: Math.max(1, f.cantidad - 1) }))
             }
+            size="lg"
           />
         </div>
 
