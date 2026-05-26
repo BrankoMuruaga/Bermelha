@@ -147,6 +147,9 @@ export const POST: APIRoute = async ({ request }) => {
           },
           metadata: {
             email_contacto: email.trim(),
+            shipping_details: shippingInfo?.address
+              ? JSON.stringify(shippingInfo.address)
+              : "Sin envío",
           },
         },
       })
