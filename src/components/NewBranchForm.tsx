@@ -4,13 +4,12 @@ import { FormInput, CustomSelect } from "./FormFields";
 import sucursalesData from "@/data/sucursalesCA.json";
 import PROVINCIAS_OPCIONES from "@/data/provincias.json";
 
-// Importamos la interfaz definida arriba
 export interface BranchAddressData {
   alias: string;
   deliveryType: "S";
   postalCode: string;
   nombreApellido: string;
-  email: string; // Se mantiene estructuralmente
+  email: string;
   telefono: string;
   provincia: string;
   localidad: string;
@@ -19,7 +18,6 @@ export interface BranchAddressData {
 }
 
 interface NewBranchFormProps {
-  // Reemplazamos any por la interfaz correspondiente
   onSaveBranchAddress: (addressData: BranchAddressData) => void;
   setIsAddingBranch: React.Dispatch<React.SetStateAction<boolean>>;
 }

@@ -5,7 +5,6 @@ import PROVINCIAS_OPCIONES from "../data/provincias.json";
 
 interface NewAddressFormProps {
   setIsAddingHome: React.Dispatch<React.SetStateAction<boolean>>;
-  // El padre solo recibe el callback con la dirección ya armada y lista para guardar
   onSaveAddress: (addressData: {
     alias: string;
     street: string;
@@ -23,7 +22,6 @@ const NewAddressForm = ({
   setIsAddingHome,
   onSaveAddress,
 }: NewAddressFormProps) => {
-  // ─── ESTADOS LOCALES (Se destruyen y reinician solos al cerrar/abrir) ───
   const [nombreApellido, setNombreApellido] = useState("");
   const [telefono, setTelefono] = useState("");
   const [provinciaCod, setProvinciaCod] = useState("");
@@ -41,7 +39,6 @@ const NewAddressForm = ({
       (p) => p.value === provinciaCod,
     );
 
-    // Le devolvemos los datos limpios al manejador del padre
     onSaveAddress({
       alias: newAlias || `Domicilio ${newStreet} ${newNumber}`,
       street: newStreet,
@@ -165,7 +162,7 @@ const NewAddressForm = ({
       <div className="flex gap-3 mt-2">
         <Button
           variant="primary"
-          label="Guardar Dirección"
+          label="Guardar"
           type="submit"
           className="flex-1 justify-center"
         />
