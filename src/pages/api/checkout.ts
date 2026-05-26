@@ -25,9 +25,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (!email) {
       return new Response(
         JSON.stringify({ error: "El email de contacto es requerido" }),
-        {
-          status: 400,
-        },
+        { status: 400 },
       );
     }
 
@@ -44,19 +42,15 @@ export const POST: APIRoute = async ({ request }) => {
         "sys.id[in]": itemIds.join(","),
         content_type: "producto",
       }),
-      getEntries(
-        "configuracionGlobal",
-        { limit: 1 }, // Solo nos interesa el registro principal
-      ),
+      getEntries<ConfiguracionGlobalFields>("configuracionGlobal", {
+        limit: 1,
+      }),
     ]);
 
     let montoParaEnvioGratis = 100000;
 
-    // @ts-ignore
-    if (configEntries.items.length > 0) {
-      // @ts-ignore
-      const configFields = configEntries.items[0]
-        .fields as unknown as ConfiguracionGlobalFields;
+    if (configEntries.length > 0) {
+      const configFields = configEntries[0].fields;
       if (configFields && configFields.montoParaEnvioGratis) {
         montoParaEnvioGratis = Number(configFields.montoParaEnvioGratis);
       }
@@ -65,9 +59,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (entries.items.length === 0) {
       return new Response(
         JSON.stringify({ error: "Productos no encontrados" }),
-        {
-          status: 404,
-        },
+        { status: 404 },
       );
     }
 
@@ -170,9 +162,7 @@ export const POST: APIRoute = async ({ request }) => {
     console.error("Error procesando checkout:", error);
     return new Response(
       JSON.stringify({ error: "Error interno del servidor" }),
-      {
-        status: 500,
-      },
+      { status: 500 },
     );
   }
 };
