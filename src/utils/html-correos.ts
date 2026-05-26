@@ -78,9 +78,6 @@ export function getPaymentApprovedHtmlTemplate(paymentId: string): string {
     </html>
   `;
 }
-
-// Agregá esto en src/utils/html-correos.ts
-
 export function getInternalOrderNotificationHtmlTemplate(
   paymentId: string | number,
   emailCliente: string,
@@ -99,28 +96,42 @@ export function getInternalOrderNotificationHtmlTemplate(
 
   const shippingHtml = shippingDetails
     ? `<ul style="list-style-type: none; padding: 0;">
-        <li style="margin-bottom: 8px;"><strong>Tipo de Envío:</strong> ${
-          shippingDetails.deliveryType === "D" ? "Domicilio" : "Sucursal"
-        }</li>
+        <li style="margin-bottom: 8px;">
+          <strong style="color: #8d4e39;">Tipo de Envío:</strong> ${
+            shippingDetails.deliveryType === "D"
+              ? "Envío a Domicilio"
+              : "Retiro en Sucursal"
+          }
+        </li>
+        ${
+          shippingDetails.alias
+            ? `<li style="margin-bottom: 8px;"><strong>Alias guardado:</strong> ${shippingDetails.alias}</li>`
+            : ""
+        }
         <li style="margin-bottom: 8px;"><strong>Destinatario:</strong> ${
           shippingDetails.nombreApellido || "No especificado"
-        }</li>
-        <li style="margin-bottom: 8px;"><strong>DNI:</strong> ${
-          shippingDetails.dni || "No especificado"
         }</li>
         <li style="margin-bottom: 8px;"><strong>Teléfono:</strong> ${
           shippingDetails.telefono || "No especificado"
         }</li>
+        
         ${
           shippingDetails.deliveryType === "D"
-            ? `<li style="margin-bottom: 8px;"><strong>Dirección:</strong> ${shippingDetails.street} ${shippingDetails.number}</li>`
-            : `<li style="margin-bottom: 8px;"><strong>Sucursal:</strong> ${shippingDetails.sucursalNombre}</li>`
+            ? `<li style="margin-bottom: 8px;"><strong>Dirección:</strong> ${shippingDetails.street} ${shippingDetails.number} ${shippingDetails.pisoDepto ? ` - Piso/Depto: ${shippingDetails.pisoDepto}` : ""}</li>`
+            : `<li style="margin-bottom: 8px;"><strong>Sucursal:</strong> ${shippingDetails.sucursalNombre} (Código: ${shippingDetails.codSucursal || "N/A"})</li>`
         }
+        
+        <li style="margin-bottom: 8px;"><strong>Provincia:</strong> ${
+          shippingDetails.provincia || "No especificada"
+        }</li>
+        <li style="margin-bottom: 8px;"><strong>Localidad/Ciudad:</strong> ${
+          shippingDetails.localidad || "No especificada"
+        }</li>
         <li style="margin-bottom: 8px;"><strong>Código Postal:</strong> ${
-          shippingDetails.postalCode
+          shippingDetails.postalCode || "No especificado"
         }</li>
       </ul>`
-    : `<p style="color: #d97706; font-weight: bold;">Acordar con el comprador / Retiro en persona.</p>`;
+    : `<p style="color: #d97706; font-weight: bold; background-color: #fef3c7; padding: 12px; border-radius: 6px; display: inline-block;">Acordar envío con el comprador / Retiro en persona.</p>`;
 
   return `
     <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
@@ -142,7 +153,9 @@ export function getInternalOrderNotificationHtmlTemplate(
         </ul>
 
         <h3 style="border-bottom: 2px solid #f3f4f6; padding-bottom: 8px; margin-top: 24px;">📦 Datos de Envío:</h3>
-        ${shippingHtml}
+        <div style="background-color: #f9fafb; padding: 16px; border-radius: 6px; border-left: 4px solid #8d4e39;">
+          ${shippingHtml}
+        </div>
         
       </div>
     </div>
