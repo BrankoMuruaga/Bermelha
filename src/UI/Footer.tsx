@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="mx-auto px-10 py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
         {/* Brand & Contacto */}
         <div className="flex flex-col gap-4">
-          <img src="./Bermelha-logo.svg" alt="Bermelha" className="w-28" />
+          <img src="/Bermelha-logo.svg" alt="Bermelha" className="w-28" />
           <p className="text-body-md text-on-surface-variant">{subtitulo}</p>
 
           {/* Email de contacto agregado acá */}
