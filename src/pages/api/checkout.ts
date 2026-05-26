@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { MercadoPagoConfig, Preference } from "mercadopago";
 import { createClient } from "contentful";
+import { getEntries } from "@/lib/contentful";
 
 const contentfulClient = createClient({
   space: import.meta.env.PUBLIC_CONTENTFUL_SPACE_ID,
@@ -43,15 +44,17 @@ export const POST: APIRoute = async ({ request }) => {
         "sys.id[in]": itemIds.join(","),
         content_type: "producto",
       }),
-      contentfulClient.getEntries({
-        content_type: "configuracionGlobal",
-        limit: 1, // Solo nos interesa el registro principal
-      }),
+      getEntries(
+        "configuracionGlobal",
+        { limit: 1 }, // Solo nos interesa el registro principal
+      ),
     ]);
 
-    let montoParaEnvioGratis = 60000;
+    let montoParaEnvioGratis = 100000;
 
+    // @ts-ignore
     if (configEntries.items.length > 0) {
+      // @ts-ignore
       const configFields = configEntries.items[0]
         .fields as unknown as ConfiguracionGlobalFields;
       if (configFields && configFields.montoParaEnvioGratis) {

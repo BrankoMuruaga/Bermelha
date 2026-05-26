@@ -1,37 +1,25 @@
 ---
+import { PRODUCTO_SELECT_FIELDS } from "@/data/config";
 import Layout from "@/layouts/Layout.astro";
 import { getEntries } from "@/lib/contentful";
 import ProductDetail from "@/UI/ProductDetail";
+import { mapContentfulProducto } from "@/utils/utils";
 
 const { slug } = Astro.params;
+
 const itemsProductos = await getEntries("producto", {
-  filter: {
-    "fields.slug": slug,
-  },
+  select: PRODUCTO_SELECT_FIELDS,
 });
 
-if (itemsProductos.length === 0) {
+const itemProducto = itemsProductos.find(
+  (item: any) => item.fields.slug === slug,
+);
+
+if (!itemProducto) {
   return Astro.redirect("/404");
 }
 
-const producto = itemsProductos.map((item: any) => ({
-  id: item.sys.id,
-  nombre: item.fields.nombre,
-  precio: item.fields.precio,
-  imagenPrincipal: "https:" + item.fields.imagenPrincipal.fields.file.url,
-  centimetros: item.fields.centimetros,
-  tags: item.fields.tags ?? [],
-  coleccion: item.fields.coleccion?.fields.nombre ?? null,
-  slug: item.fields.slug,
-  customizations: {
-    color:
-      item.fields.color?.map((colorItem: any) => ({
-        nombre: colorItem.fields.nombre,
-        codigo: colorItem.fields.codigo,
-        codigoHex: colorItem.fields.codigoHexa,
-      })) ?? [],
-  },
-}))[0];
+const producto = mapContentfulProducto(itemProducto);
 ---
 
 <Layout>

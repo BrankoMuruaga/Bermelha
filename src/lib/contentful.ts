@@ -1,4 +1,5 @@
 import { createClient } from "contentful";
+import type { Entry, EntrySkeletonType } from "contentful";
 
 export const contentfulClient = createClient({
   space: import.meta.env.PUBLIC_CONTENTFUL_SPACE_ID,
@@ -10,15 +11,17 @@ interface GetEntriesOptions {
   limit?: number;
   skip?: number;
   order?: string;
+  select?: string;
 }
 
-const cache: Record<string, { data: any[]; timestamp: number }> = {};
-const CACHE_TTL = 1000 * 60 * 5; // 5 minutos
+const cache: Record<
+  string,
+  { data: Entry<any, undefined, string>[]; timestamp: number }
+> = {};
 
-/**
- * Genera una clave única para la caché basada en el contentType
- * y todos los parámetros de la consulta.
- */
+const MINUTOS_DE_CACHE = 5;
+const CACHE_TTL = 1000 * 60 * MINUTOS_DE_CACHE;
+
 function buildCacheKey(
   contentType: string,
   options: GetEntriesOptions,
@@ -46,15 +49,19 @@ function buildCacheKey(
   return `${contentType}:${JSON.stringify(normalizedOptions)}`;
 }
 
-export async function getEntries<T = any>(
+export async function getEntries<T extends Record<string, any> = any>(
   contentType: string,
   options: GetEntriesOptions = {},
-): Promise<T[]> {
+): Promise<Entry<EntrySkeletonType<T>, undefined, string>[]> {
   const cacheKey = buildCacheKey(contentType, options);
   const now = Date.now();
 
   if (cache[cacheKey] && now - cache[cacheKey].timestamp < CACHE_TTL) {
-    return cache[cacheKey].data as T[];
+    return cache[cacheKey].data as unknown as Entry<
+      EntrySkeletonType<T>,
+      undefined,
+      string
+    >[];
   }
 
   const query: Record<string, any> = {
@@ -65,9 +72,15 @@ export async function getEntries<T = any>(
   if (options.limit !== undefined) query.limit = options.limit;
   if (options.skip !== undefined) query.skip = options.skip;
   if (options.order !== undefined) query.order = options.order;
+  if (options.select !== undefined) query.select = options.select;
 
   const res = await contentfulClient.getEntries(query);
+
   cache[cacheKey] = { data: res.items, timestamp: now };
 
-  return res.items as T[];
+  return res.items as unknown as Entry<
+    EntrySkeletonType<T>,
+    undefined,
+    string
+  >[];
 }

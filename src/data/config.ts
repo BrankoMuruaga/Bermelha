@@ -2,6 +2,9 @@ export const WHATSAPP_URL = "https://wa.me/+540";
 
 export const mailContact = "contacto@bermelha.com";
 
+export const PRODUCTO_SELECT_FIELDS =
+  "sys.id,fields.nombre,fields.precio,fields.imagenPrincipal,fields.centimetros,fields.tags,fields.coleccion,fields.slug,fields.color";
+
 export const ITEMS_PER_PAGE = 4;
 
 export const navbar = [
