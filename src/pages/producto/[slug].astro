@@ -1,0 +1,27 @@
+---
+import { PRODUCTO_SELECT_FIELDS } from "@/data/config";
+import Layout from "@/layouts/Layout.astro";
+import { getEntries } from "@/lib/contentful";
+import ProductDetail from "@/UI/ProductDetail";
+import { mapContentfulProducto } from "@/utils/utils";
+
+const { slug } = Astro.params;
+
+const itemsProductos = await getEntries("producto", {
+  select: PRODUCTO_SELECT_FIELDS,
+});
+
+const itemProducto = itemsProductos.find(
+  (item: any) => item.fields.slug === slug,
+);
+
+if (!itemProducto) {
+  return Astro.redirect("/404");
+}
+
+const producto = mapContentfulProducto(itemProducto);
+---
+
+<Layout>
+  <ProductDetail client:load producto={producto} />
+</Layout>

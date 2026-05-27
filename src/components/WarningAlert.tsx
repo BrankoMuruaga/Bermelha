@@ -6,7 +6,7 @@ interface WarningAlertProps {
 
 export const WarningAlert = ({ children }: WarningAlertProps) => {
   return (
-    <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-md flex items-center gap-3 w-full shadow-sm my-2">
+    <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-md flex items-center gap-3 w-full shadow-sm">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         className="w-6 h-6 shrink-0 text-orange-500 mt-0.5"

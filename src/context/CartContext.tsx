@@ -7,18 +7,21 @@ import {
 } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
+type Customizations = Record<string, any>;
+
 interface CartItem {
   id: string;
   quantity: number;
+  customizations?: Customizations;
 }
 
 interface CartContextType {
   cart: CartItem[];
   hydrated: boolean;
-  add: (id: string) => void;
-  remove: (id: string) => void;
-  quantity: (id: string) => number;
-  decreaseOne: (id: string) => void;
+  add: (id: string, customizations?: Customizations) => void;
+  remove: (id: string, customizations?: Customizations) => void;
+  quantity: (id: string, customizations?: Customizations) => number;
+  decreaseOne: (id: string, customizations?: Customizations) => void;
   clearCart: () => void;
   total: number;
 }
@@ -31,25 +34,76 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => setHydrated(true), []);
 
-  const decreaseOne = (id: string) => {
+  // Comparación profunda de valores
+  const deepEqual = (a: any, b: any): boolean => {
+    // Si son el mismo valor primitivo o la misma referencia
+    if (a === b) return true;
+
+    // Si alguno es null o no es objeto, no son iguales
+    if (a == null || b == null) return false;
+    if (typeof a !== "object" || typeof b !== "object") return false;
+
+    // Si son arrays, comparar longitud y elementos
+    if (Array.isArray(a) !== Array.isArray(b)) return false;
+
+    const keysA = Object.keys(a);
+    const keysB = Object.keys(b);
+
+    // Si tienen diferente número de keys, no son iguales
+    if (keysA.length !== keysB.length) return false;
+
+    // Comparar cada key recursivamente
+    return keysA.every((key) => {
+      return keysB.includes(key) && deepEqual(a[key], b[key]);
+    });
+  };
+
+  const areCustomizationsEqual = (a?: Customizations, b?: Customizations) => {
+    if (!a && !b) return true; // Ambos sin customizaciones
+    if (!a || !b) return false; // Uno tiene y el otro no
+
+    return deepEqual(a, b);
+  };
+
+  const isSameItem = (
+    item: CartItem,
+    id: string,
+    customizations?: Customizations,
+  ) => {
+    return (
+      item.id === id &&
+      areCustomizationsEqual(item.customizations, customizations)
+    );
+  };
+
+  const decreaseOne = (id: string, customizations?: Customizations) => {
     setCart((prev) => {
-      const item = prev.find((i) => i.id === id);
+      const item = prev.find((i) => isSameItem(i, id, customizations));
       if (!item) return prev;
-      if (item.quantity === 1) return prev.filter((i) => i.id !== id);
+
+      if (item.quantity === 1) {
+        return prev.filter((i) => !isSameItem(i, id, customizations));
+      }
+
       return prev.map((i) =>
-        i.id === id ? { ...i, quantity: i.quantity - 1 } : i,
+        isSameItem(i, id, customizations)
+          ? { ...i, quantity: i.quantity - 1 }
+          : i,
       );
     });
   };
 
-  const add = (id: string) => {
+  const add = (id: string, customizations?: Customizations) => {
     setCart((prev) => {
-      const existing = prev.find((i) => i.id === id);
+      const existing = prev.find((i) => isSameItem(i, id, customizations));
+
       return existing
         ? prev.map((i) =>
-            i.id === id ? { ...i, quantity: i.quantity + 1 } : i,
+            isSameItem(i, id, customizations)
+              ? { ...i, quantity: i.quantity + 1 }
+              : i,
           )
-        : [...prev, { id, quantity: 1 }];
+        : [...prev, { id, quantity: 1, customizations }];
     });
   };
 
@@ -62,9 +116,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return [];
     });
 
-  const remove = (id: string) =>
-    setCart((prev) => prev.filter((i) => i.id !== id));
-  const quantity = (id: string) => cart.find((i) => i.id === id)?.quantity ?? 0;
+  const remove = (id: string, customizations?: Customizations) =>
+    setCart((prev) => prev.filter((i) => !isSameItem(i, id, customizations)));
+
+  const quantity = (id: string, customizations?: Customizations) =>
+    cart.find((i) => isSameItem(i, id, customizations))?.quantity ?? 0;
+
   const total = cart.reduce((acc, i) => acc + i.quantity, 0);
 
   return (

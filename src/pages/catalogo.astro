@@ -1,19 +1,14 @@
 ---
+import { PRODUCTO_SELECT_FIELDS } from "@/data/config";
 import Layout from "@/layouts/Layout.astro";
 import { getEntries } from "@/lib/contentful";
-
 import { MainCatalogo } from "@/UI/Catalogo";
+import { mapContentfulProducto } from "@/utils/utils";
 
-const itemsProductos = await getEntries("producto");
-const productos = itemsProductos.map((item: any) => ({
-  id: item.sys.id,
-  nombre: item.fields.nombre,
-  precio: item.fields.precio,
-  imagenPrincipal: "https:" + item.fields.imagenPrincipal.fields.file.url,
-  centimetros: item.fields.centimetros,
-  tags: item.fields.tags ?? [],
-  coleccion: item.fields.coleccion?.fields.nombre ?? null,
-}));
+const itemsProductos = await getEntries("producto", {
+  select: PRODUCTO_SELECT_FIELDS,
+});
+const productos = itemsProductos.map(mapContentfulProducto);
 ---
 
 <Layout>

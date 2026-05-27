@@ -9,13 +9,12 @@ const Navbar = () => {
   const notificationCart = hydrated && total > 0;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest ghost-border border-b shadow-ambient-sm rounded-b-md">
+    <header className="fixed top-0 left-0 right-0 z-20 bg-surface-container-lowest ghost-border border-b shadow-ambient-sm rounded-b-md">
       <div className="mx-auto px-6 py-4 flex items-center justify-between">
         <a href="/">
-          <img src="./Bermelha-logo.svg" alt="Bermelha" className="w-28" />
+          <img src="/Bermelha-logo.svg" alt="Bermelha" className="w-28" />
         </a>
 
-        {/* Links — desktop */}
         <ul className="hidden md:flex items-center gap-8">
           {navbar.map((item) => (
             <li key={item.href}>
@@ -29,7 +28,6 @@ const Navbar = () => {
           ))}
         </ul>
 
-        {/* Iconos + hamburguesa */}
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-4">
             <a

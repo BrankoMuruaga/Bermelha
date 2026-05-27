@@ -1,19 +1,20 @@
 ---
 import Main from "@/UI/Main";
+import { PRODUCTO_SELECT_FIELDS } from "@/data/config";
 import Layout from "@/layouts/Layout.astro";
 import { getEntries } from "@/lib/contentful";
+import { mapContentfulProducto } from "@/utils/utils";
 
-const itemsProductos = await getEntries("producto");
-const itemsColecciones = await getEntries("coleccion");
-const productos = itemsProductos.map((item: any) => ({
-  id: item.sys.id,
-  nombre: item.fields.nombre,
-  precio: item.fields.precio,
-  imagenPrincipal: "https:" + item.fields.imagenPrincipal.fields.file.url,
-  centimetros: item.fields.centimetros,
-  tags: item.fields.tags ?? [],
-  coleccion: item.fields.coleccion?.fields.nombre ?? null,
-}));
+const [itemsProductos, itemsColecciones] = await Promise.all([
+  getEntries("producto", {
+    select: PRODUCTO_SELECT_FIELDS,
+  }),
+  getEntries("coleccion", {
+    select:
+      "sys.id,fields.nombre,fields.subtitulo,fields.imagen,fields.destacado,fields.posicion",
+  }),
+]);
+const productos = itemsProductos.map(mapContentfulProducto);
 const colecciones = itemsColecciones.map((item: any) => ({
   id: item.sys.id,
   nombre: item.fields.nombre,

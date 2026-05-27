@@ -18,7 +18,9 @@ interface CatalogoProps {
     imagenPrincipal: string;
     centimetros: number;
     tags?: string[];
+    slug: string;
     coleccion?: string | null;
+    customizations?: Record<string, any>;
   }[];
 }
 
@@ -63,14 +65,18 @@ export default function Catalogo({
             </p>
           )}
           {hydrated && filtered.length > 0 && (
-            <ul className="flex flex-wrap gap-6 pb-2 items-center justify-center">
+            <ul className="flex flex-wrap gap-4 pb-2 items-center justify-center">
               {paginatedProducts.map((p) => (
-                <ProductCard key={p.id} {...p} />
+                <ProductCard
+                  key={p.id}
+                  {...p}
+                  customizations={p.customizations}
+                />
               ))}
             </ul>
           )}
           {!hydrated && (
-            <ul className="flex flex-wrap gap-6 pb-2 items-center justify-center">
+            <ul className="flex flex-wrap gap-4 pb-2 items-center justify-center">
               {Array.from({ length: 4 }).map((_, i) => (
                 <ProductCardSkeleton key={i} />
               ))}

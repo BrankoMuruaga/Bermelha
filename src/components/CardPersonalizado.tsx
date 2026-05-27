@@ -4,7 +4,7 @@ export default function CustomOrdersBanner() {
   return (
     <section className="bg-surface-container-low rounded-md py-10 px-7 sm:p-20 flex items-center justify-between gap-8 overflow-hidden relative shadow-ambient-sm">
       {/* Texto */}
-      <article className="flex flex-col gap-4 z-10 text-center justify-center items-center">
+      <article className="flex flex-col gap-4 text-center justify-center items-center">
         <h2 className="text-headline-md text-on-surface">
           Pedidos Personalizados
         </h2>

@@ -4,7 +4,6 @@ import { getEntries } from "@/lib/contentful";
 import MainCarrito from "@/UI/Carrito.tsx";
 
 const itemsProductos = await getEntries("producto");
-const itemsConfiguracion = await getEntries("configuracionGlobal");
 const productos = itemsProductos.map((item: any) => ({
   id: item.sys.id,
   nombre: item.fields.nombre,
@@ -14,9 +13,17 @@ const productos = itemsProductos.map((item: any) => ({
   tags: item.fields.tags ?? [],
   coleccion: item.fields.coleccion?.fields.nombre ?? null,
 }));
+
+const itemsConfiguracion = await getEntries("configuracionGlobal");
 const telefono = itemsConfiguracion[0].fields.telefono;
+const montoParaEnvioGratis = itemsConfiguracion[0].fields.montoParaEnvioGratis;
 ---
 
 <Layout>
-  <MainCarrito telefono={telefono} productos={productos} client:load />
+  <MainCarrito
+    productos={productos}
+    telefono={telefono}
+    montoParaEnvioGratis={montoParaEnvioGratis}
+    client:load
+  />
 </Layout>
