@@ -41,7 +41,7 @@ export const footer = {
     redes: [
       {
         name: "Instagram",
-        href: "https://www.instagram.com/bermelhasweet/",
+        href: "https://www.instagram.com/bermelhaartesanal/",
       },
     ],
   },
